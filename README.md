@@ -2,6 +2,10 @@ GitHub Repository Link: https://github.com/sujon-258549/level-2-assignment-2
 Live Deployment Link: https://assignment2-eta-topaz.vercel.app
 Video Explanation (Public Link) : https://drive.google.com/file/d/1SDdQCvhNpQG_5MLmh6vsMX-s9EP0yLjP/view?usp=sharing
 
+<!-- instuctuon -->
+
+simple express mongoos and typescript bakend webside
+
 <!-- use main tecnologins -->
 
 1.npm init -y
