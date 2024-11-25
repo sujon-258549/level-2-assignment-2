@@ -39,7 +39,9 @@ const getRevenue = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'Revenue calculated successfully',
-      data: revenue.length > 0 ? revenue[0].totalRevenue : 0, // Handle empty result
+      data: {
+        totalRevenue: revenue.length > 0 ? revenue[0].totalRevenue : 0, // Handle empty result
+      },
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
