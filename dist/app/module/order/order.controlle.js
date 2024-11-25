@@ -37,9 +37,14 @@ const getRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const revenue = yield order_model_1.OrderModel.aggregate([
             {
+                $project: {
+                    totalPrices: { $multiply: ['$totalPrice', '$quantity'] }, // Calculate total revenue for each document
+                },
+            },
+            {
                 $group: {
-                    _id: null, // Group all documents
-                    totalRevenue: { $sum: '$totalPrice' },
+                    _id: null, // Group all documents together
+                    totalRevenue: { $sum: '$totalPrices' }, // Sum up all calculated revenues
                 },
             },
         ]);
