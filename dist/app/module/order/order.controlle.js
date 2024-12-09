@@ -20,15 +20,15 @@ const createorder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const orderZoodvalidaction = order_zod_1.orderZodSchema.parse(data);
         const result = yield order_servises_1.orderServises.createOrder(orderZoodvalidaction);
         res.status(200).json({
-            seccess: true,
-            message: 'Order create success',
+            message: 'Order created successfully',
+            status: true,
             result: result,
         });
     }
     catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Error creating Order',
+            message: error === null || error === void 0 ? void 0 : error.message,
             error: error,
         });
     }
@@ -49,8 +49,8 @@ const getRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             },
         ]);
         res.status(200).json({
-            success: true,
             message: 'Revenue calculated successfully',
+            status: true,
             data: {
                 totalRevenue: revenue.length > 0 ? revenue[0].totalRevenue : 0, // Handle empty result
             },

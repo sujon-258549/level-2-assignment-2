@@ -12,14 +12,14 @@ const createorder = async (req: Request, res: Response) => {
     const orderZoodvalidaction = orderZodSchema.parse(data);
     const result = await orderServises.createOrder(orderZoodvalidaction);
     res.status(200).json({
-      seccess: true,
-      message: 'Order create success',
+      message: 'Order created successfully',
+      status: true,
       result: result,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Error creating Order',
+      message: (error as Error)?.message,
       error: error,
     });
   }
@@ -42,8 +42,8 @@ const getRevenue = async (req: Request, res: Response) => {
     ]);
 
     res.status(200).json({
-      success: true,
       message: 'Revenue calculated successfully',
+      status: true,
       data: {
         totalRevenue: revenue.length > 0 ? revenue[0].totalRevenue : 0, // Handle empty result
       },

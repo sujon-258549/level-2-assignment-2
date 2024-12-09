@@ -14,62 +14,40 @@ const car_model_1 = require("./car.model");
 const mongodb_1 = require("mongodb");
 // Function to create a new car entry
 const createCar = (carsData) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const car = new car_model_1.CarModel(carsData);
-        const result = yield car.save(); // Await the save operation to ensure completion
-        return result;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    }
-    catch (error) {
-        console.error('Error creating car:', error.message || error); // Log the error with a helpful message
-        throw new Error(error.details || 'Failed to create car'); // Throw an error to propagate
-    }
+    const car = new car_model_1.CarModel(carsData);
+    const result = yield car.save(); // Await the save operation to ensure completion
+    return result;
 });
 // Function to find all car data
-const findAllCarData = () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const result = yield car_model_1.CarModel.find(); // Fetch all car data asynchronously
-        return result;
+const findAllCarData = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    let searchTerm = '';
+    if (query.searchTerm) {
+        searchTerm = query.searchTerm;
     }
-    catch (error) {
-        console.log(error);
-    }
+    const result = yield car_model_1.CarModel.find({
+        $or: ['brand', 'model', 'category'].map((field) => ({
+            [field]: { $regex: searchTerm, $options: 'i' },
+        })),
+    });
+    return result;
 });
 // Function to find a car by its ID
 const findOneCarData = (carId) => __awaiter(void 0, void 0, void 0, function* () {
     // Use lowercase 'string' for consistency
-    try {
-        const result = yield car_model_1.CarModel.findOne({ _id: new mongodb_1.ObjectId(carId) }); // Convert string _id to ObjectId
-        return result;
-    }
-    catch (error) {
-        console.error('Error fetching car data by ID:', error); // Enhanced error logging
-        throw new Error('Error fetching car data by ID');
-    }
+    const result = yield car_model_1.CarModel.findOne({ _id: new mongodb_1.ObjectId(carId) }); // Convert string _id to ObjectId
+    return result;
 });
 const deleteSingleCarData = (carId) => __awaiter(void 0, void 0, void 0, function* () {
     // Use lowercase 'string' for consistency
-    try {
-        const result = yield car_model_1.CarModel.findByIdAndDelete({
-            _id: new mongodb_1.ObjectId(carId),
-        }); // Convert string _id to ObjectId
-        return result;
-    }
-    catch (error) {
-        console.error('Error fetching car data by ID:', error); // Enhanced error logging
-        throw new Error('Error fetching car data by ID');
-    }
+    const result = yield car_model_1.CarModel.findByIdAndDelete({
+        _id: new mongodb_1.ObjectId(carId),
+    }); // Convert string _id to ObjectId
+    return result;
 });
 const updateOneCarData = (carId, updateData) => __awaiter(void 0, void 0, void 0, function* () {
     // Use lowercase 'string' for consistency
-    try {
-        const result = yield car_model_1.CarModel.findByIdAndUpdate(new mongodb_1.ObjectId(carId), updateData, { new: true }); // Convert string _id to ObjectId
-        return result;
-    }
-    catch (error) {
-        console.error('Error fetching car data by ID:', error); // Enhanced error logging
-        throw new Error('Error fetching car data by ID');
-    }
+    const result = yield car_model_1.CarModel.findByIdAndUpdate(new mongodb_1.ObjectId(carId), updateData, { new: true }); // Convert string _id to ObjectId
+    return result;
 });
 exports.carServises = {
     createCar,

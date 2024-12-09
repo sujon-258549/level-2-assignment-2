@@ -4,7 +4,7 @@ import { carController } from './car.controlle';
 // create router
 const router = express.Router();
 
-router.post('/create-car', carController.createCar);
+router.post('/', carController.createCar);
 router.get('/', carController.findAllcarC);
 router.get('/:carId', carController.findOneCar);
 router.put('/:carId', carController.updateCar);

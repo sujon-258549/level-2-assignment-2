@@ -10,8 +10,8 @@ const createCar = async (req: Request, res: Response) => {
     const zodValidactionCar = carZodSchemaValidaction.parse(data);
     const result = await carServises.createCar(zodValidactionCar);
     res.status(200).json({
-      seccess: true,
-      message: 'Car create success',
+      message: 'Car created successfully',
+      status: true,
       result: result,
     });
   } catch (error) {
@@ -25,16 +25,16 @@ const createCar = async (req: Request, res: Response) => {
 
 const findAllcarC = async (req: Request, res: Response) => {
   try {
-    const result = await carServises.findAllCarData();
+    const result = await carServises.findAllCarData(req.query);
     res.status(200).json({
-      success: true,
       message: 'Cars retrieved successfully',
+      status: true,
       result,
     });
   } catch (error: any) {
     res.status(200).json({
-      success: true,
       message: 'Cars retrieved error',
+      status: true,
       error: error.details || error.message || 'An unexpected error occurred',
     });
   }
@@ -45,8 +45,8 @@ const findOneCar = async (req: Request, res: Response) => {
     const { carId } = req.params;
     const result = await carServises.findOneCarData(carId);
     res.status(200).json({
-      success: true,
       message: 'Cars retrieved successfully',
+      status: true,
       result,
     });
   } catch (error: any) {
@@ -66,8 +66,8 @@ const updateCar = async (req: Request, res: Response) => {
     const updatedCar = await carServises.updateOneCarData(carId, updateData); // Call the update function
     // Return success response with the updated car data
     res.status(200).json({
-      success: true,
       message: 'Car updated successfully',
+      status: true,
       result: updatedCar,
     });
   } catch (error: any) {
@@ -85,13 +85,13 @@ const deleteCar = async (req: Request, res: Response) => {
     await carServises.deleteSingleCarData(carId); // Call the update function
     // Return success response with the updated car data
     res.status(200).json({
-      success: true,
+      status: true,
       message: 'Car Delete  successfully',
-      result: {},
+      data: {},
     });
   } catch (error: any) {
     res.status(400).json({
-      success: false,
+      status: false,
       message: 'Failed to Deleted car',
       error: error.message || 'Failed to Deleted car',
     });

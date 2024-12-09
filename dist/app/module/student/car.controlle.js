@@ -22,8 +22,8 @@ const createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const zodValidactionCar = car_zod_1.default.parse(data);
         const result = yield car_servise_1.carServises.createCar(zodValidactionCar);
         res.status(200).json({
-            seccess: true,
-            message: 'Car create success',
+            message: 'Car created successfully',
+            status: true,
             result: result,
         });
     }
@@ -37,17 +37,17 @@ const createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const findAllcarC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield car_servise_1.carServises.findAllCarData();
+        const result = yield car_servise_1.carServises.findAllCarData(req.query);
         res.status(200).json({
-            success: true,
             message: 'Cars retrieved successfully',
+            status: true,
             result,
         });
     }
     catch (error) {
         res.status(200).json({
-            success: true,
             message: 'Cars retrieved error',
+            status: true,
             error: error.details || error.message || 'An unexpected error occurred',
         });
     }
@@ -57,8 +57,8 @@ const findOneCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { carId } = req.params;
         const result = yield car_servise_1.carServises.findOneCarData(carId);
         res.status(200).json({
-            success: true,
             message: 'Cars retrieved successfully',
+            status: true,
             result,
         });
     }
@@ -77,8 +77,8 @@ const updateCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const updatedCar = yield car_servise_1.carServises.updateOneCarData(carId, updateData); // Call the update function
         // Return success response with the updated car data
         res.status(200).json({
-            success: true,
             message: 'Car updated successfully',
+            status: true,
             result: updatedCar,
         });
     }
@@ -96,14 +96,14 @@ const deleteCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         yield car_servise_1.carServises.deleteSingleCarData(carId); // Call the update function
         // Return success response with the updated car data
         res.status(200).json({
-            success: true,
+            status: true,
             message: 'Car Delete  successfully',
-            result: {},
+            data: {},
         });
     }
     catch (error) {
         res.status(400).json({
-            success: false,
+            status: false,
             message: 'Failed to Deleted car',
             error: error.message || 'Failed to Deleted car',
         });

@@ -8,7 +8,7 @@ const express_1 = __importDefault(require("express"));
 const car_controlle_1 = require("./car.controlle");
 // create router
 const router = express_1.default.Router();
-router.post('/create-car', car_controlle_1.carController.createCar);
+router.post('/', car_controlle_1.carController.createCar);
 router.get('/', car_controlle_1.carController.findAllcarC);
 router.get('/:carId', car_controlle_1.carController.findOneCar);
 router.put('/:carId', car_controlle_1.carController.updateCar);
