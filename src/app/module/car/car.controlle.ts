@@ -5,14 +5,14 @@ import carZodSchemaValidaction from './car.zod';
 
 const createCar = async (req: Request, res: Response) => {
   try {
-    const data = req.body.car;
+    const data = req.body;
     // zod validaction
     const zodValidactionCar = carZodSchemaValidaction.parse(data);
     const result = await carServises.createCar(zodValidactionCar);
     res.status(200).json({
       message: 'Car created successfully',
       status: true,
-      result: result,
+      data: result,
     });
   } catch (error) {
     res.status(500).json({

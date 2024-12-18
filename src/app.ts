@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { carRouter } from './app/module/student/car.router';
+import { carRouter } from './app/module/car/car.router';
 import { orderRouter } from './app/module/order/order.router';
 const app = express();
 // const port = 3000;

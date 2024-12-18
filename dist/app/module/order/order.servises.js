@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.orderServises = void 0;
-const car_model_1 = require("../student/car.model");
+const car_model_1 = require("../car/car.model");
 const order_model_1 = require("./order.model");
 const createOrder = (order) => __awaiter(void 0, void 0, void 0, function* () {
     // Find the car by ID

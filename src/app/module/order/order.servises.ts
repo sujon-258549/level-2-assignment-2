@@ -1,4 +1,4 @@
-import { CarModel } from '../student/car.model';
+import { CarModel } from '../car/car.model';
 import { TOrder } from './order.interface';
 import { OrderModel } from './order.model';
 

@@ -28,13 +28,9 @@ const carZodSchemaValidaction = z.object({
         'Category is required and must be one of Sedan, SUV, Truck, Coupe, Convertible',
     }),
   }),
-  description: z
-    .string({
-      errorMap: () => ({ message: 'Description is required' }),
-    })
-    .min(200, {
-      message: 'Description must be at least 200 characters long',
-    }),
+  description: z.string({
+    errorMap: () => ({ message: 'Description is required' }),
+  }),
   quantity: z
     .number({
       errorMap: () => ({ message: 'Quantity is required' }),
