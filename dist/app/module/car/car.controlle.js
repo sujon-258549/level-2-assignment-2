@@ -41,7 +41,7 @@ const findAllcarC = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).json({
             message: 'Cars retrieved successfully',
             status: true,
-            result,
+            data: result,
         });
     }
     catch (error) {
@@ -59,7 +59,7 @@ const findOneCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(200).json({
             message: 'Cars retrieved successfully',
             status: true,
-            result,
+            data: result,
         });
     }
     catch (error) {
@@ -79,7 +79,7 @@ const updateCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json({
             message: 'Car updated successfully',
             status: true,
-            result: updatedCar,
+            data: updatedCar,
         });
     }
     catch (error) {

@@ -22,7 +22,7 @@ const createorder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).json({
             message: 'Order created successfully',
             status: true,
-            result: result,
+            data: result,
         });
     }
     catch (error) {

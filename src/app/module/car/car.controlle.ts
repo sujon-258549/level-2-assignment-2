@@ -29,7 +29,7 @@ const findAllcarC = async (req: Request, res: Response) => {
     res.status(200).json({
       message: 'Cars retrieved successfully',
       status: true,
-      result,
+      data: result,
     });
   } catch (error: any) {
     res.status(200).json({
@@ -47,7 +47,7 @@ const findOneCar = async (req: Request, res: Response) => {
     res.status(200).json({
       message: 'Cars retrieved successfully',
       status: true,
-      result,
+      data: result,
     });
   } catch (error: any) {
     res.status(200).json({
@@ -68,7 +68,7 @@ const updateCar = async (req: Request, res: Response) => {
     res.status(200).json({
       message: 'Car updated successfully',
       status: true,
-      result: updatedCar,
+      data: updatedCar,
     });
   } catch (error: any) {
     res.status(400).json({
