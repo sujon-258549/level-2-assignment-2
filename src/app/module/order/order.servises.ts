@@ -3,13 +3,16 @@ import { TOrder } from './order.interface';
 import { OrderModel } from './order.model';
 
 const createOrder = async (order: TOrder) => {
+  console.log(order?.car);
+  const car = order?.car;
   // Find the car by ID
-  const inStockCar = await CarModel.findById(order.car);
+  const inStockCar = await CarModel.findById(car);
   // Validate car stock
+  console.log(inStockCar?.quantity > order?.quantity);
   if (
-    !inStockCar ||
-    inStockCar?.inStock === false ||
-    inStockCar.quantity < order.quantity
+    inStockCar?.quantity < order?.quantity
+    // !inStockCar ||
+    // inStockCar?.inStock === false ||
   ) {
     throw new Error('Car stock is unavailable.');
   }
@@ -20,6 +23,6 @@ const createOrder = async (order: TOrder) => {
   return result;
 };
 
-export const orderServises = {
+export const orderServices = {
   createOrder,
 };

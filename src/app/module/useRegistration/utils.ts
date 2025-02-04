@@ -5,6 +5,7 @@ export const createToken = (
   secret: string,
   expiresIn: string,
 ): string => {
+  // @ts-expect-error signin
   return jwt.sign(
     {
       ...JwtPayload, // Spread the payload properties

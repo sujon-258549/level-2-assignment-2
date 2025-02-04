@@ -14,7 +14,7 @@ export const userRole = {
 type TUserRole = keyof typeof userRole;
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1]; //?.split(' ')[2];
+    const token = req.headers.authorization;
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'User is not authorized');
     }
@@ -23,6 +23,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.JWT_ACCESS_TOKEN as string,
     ) as JwtPayload;
+    console.log(decoded, requiredRoles, token);
     if (!decoded) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'User is not authorized');
     }
