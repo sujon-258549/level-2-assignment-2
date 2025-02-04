@@ -8,11 +8,11 @@ const createOrder = async (order: TOrder) => {
   // Find the car by ID
   const inStockCar = await CarModel.findById(car);
   // Validate car stock
-  console.log(inStockCar?.quantity > order?.quantity);
+  console.log(inStockCar?.quantity, order?.quantity);
   if (
-    inStockCar?.quantity < order?.quantity
-    // !inStockCar ||
-    // inStockCar?.inStock === false ||
+    !inStockCar ||
+    inStockCar?.inStock === false ||
+    inStockCar?.quantity > order?.quantity
   ) {
     throw new Error('Car stock is unavailable.');
   }
