@@ -1,17 +1,15 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { carRouter } from './app/module/car/car.router';
-import { orderRouter } from './app/module/order/order.router';
+import router from './app/module/router';
 const app = express();
 // const port = 3000;
 
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/cars', carRouter);
-app.use('/api/orders', orderRouter);
+app.use('/api', router);
 app.get('/', (req: Request, res: Response) => {
-  res.send('Assign ment Servise on ');
+  res.send('Assign meat Service on ');
 });
 
 export default app;
