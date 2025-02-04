@@ -1,105 +1,66 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
-import { carServises as carServices } from './car.servise';
-import carZodSchemaValidaction from './car.zod';
+import { carServices as carServices } from './car.service';
 import { sendSuccess } from '../../utility/sendSuccess';
 import httpStatus from 'http-status';
+import catchAsync from '../../utility/catchAsync';
 
-const createCar = async (req: Request, res: Response) => {
-  try {
-    const data = req.body;
-    // zod validation
-    const zodValidationCar = carZodSchemaValidaction.parse(data);
-    const result = await carServices.createCar(zodValidationCar);
-    sendSuccess(res, {
-      statusCod: httpStatus.CREATED,
-      success: true,
-      message: 'Car created successfully',
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error creating Car',
-      error: error,
-    });
-  }
-};
+const createCar = catchAsync(async (req: Request, res: Response) => {
+  const data = req.body;
+  const result = await carServices.createCar(data);
+  sendSuccess(res, {
+    statusCod: httpStatus.CREATED,
+    success: true,
+    message: 'Car created successfully',
+    data: result,
+  });
+});
 
-const findAllcarC = async (req: Request, res: Response) => {
-  try {
-    const result = await carServices.findAllCarData(req.query);
-    res.status(200).json({
-      message: 'Cars retrieved successfully',
-      status: true,
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(200).json({
-      message: 'Cars retrieved error',
-      status: true,
-      error: error.details || error.message || 'An unexpected error occurred',
-    });
-  }
-};
+const findAllcarC = catchAsync(async (req: Request, res: Response) => {
+  const result = await carServices.findAllCarData(req.query);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    success: true,
+    message: 'Cars retrieved successfully',
+    data: result,
+  });
+});
 
-const findOneCar = async (req: Request, res: Response) => {
-  try {
-    const { carId } = req.params;
-    const result = await carServices.findOneCarData(carId);
-    res.status(200).json({
-      message: 'Cars retrieved successfully',
-      status: true,
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(200).json({
-      success: true,
-      message: 'Cars retrieved error',
-      error: error.details || error.message || 'An unexpected error occurred',
-    });
-  }
-};
+const findOneCar = catchAsync(async (req: Request, res: Response) => {
+  const { carId } = req.params;
+  const result = await carServices.findOneCarData(carId);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    success: true,
+    message: 'Cars retrieved successfully',
+    data: result,
+  });
+});
 
-const updateCar = async (req: Request, res: Response) => {
-  try {
-    const { carId } = req.params; // Get carId from URL params
-    const updateData = req.body; // Get data to update from the request body
+// update course
+const updateCar = catchAsync(async (req: Request, res: Response) => {
+  const { carId } = req.params; // Get carId from URL params
+  const updateData = req.body; // Get data to update from the request body
+  const updatedCar = await carServices.updateOneCarData(carId, updateData); // Call the update function
+  // Return success response with the updated car data
+  sendSuccess(res, {
+    statusCod: httpStatus.CREATED,
+    success: true,
+    message: 'Car updated successfully',
+    data: updatedCar,
+  });
+});
+const deleteCar = catchAsync(async (req: Request, res: Response) => {
+  const { carId } = req.params; // Get carId from URL params
 
-    const updatedCar = await carServices.updateOneCarData(carId, updateData); // Call the update function
-    // Return success response with the updated car data
-    res.status(200).json({
-      message: 'Car updated successfully',
-      status: true,
-      data: updatedCar,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: 'Failed to update car',
-      error: error.message || 'An unexpected error occurred',
-    });
-  }
-};
-const deleteCar = async (req: Request, res: Response) => {
-  try {
-    const { carId } = req.params; // Get carId from URL params
-
-    await carServices.deleteSingleCarData(carId); // Call the update function
-    // Return success response with the updated car data
-    res.status(200).json({
-      status: true,
-      message: 'Car Delete  successfully',
-      data: {},
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      status: false,
-      message: 'Failed to Deleted car',
-      error: error.message || 'Failed to Deleted car',
-    });
-  }
-};
+  await carServices.deleteSingleCarData(carId); // Call the update function
+  // Return success response with the updated car data
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    success: true,
+    message: 'Car Delete  successfully',
+  });
+});
 
 export const carController = {
   createCar,

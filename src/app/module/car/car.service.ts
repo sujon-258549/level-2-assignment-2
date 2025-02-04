@@ -3,9 +3,8 @@ import { CarModel } from './car.model';
 import { ObjectId } from 'mongodb';
 
 // Function to create a new car entry
-const createCar = async (carsData: TCar) => {
-  const car = new CarModel(carsData);
-  const result = await car.save(); // Await the save operation to ensure completion
+const createCar = async (payload: TCar) => {
+  const result = await CarModel.create(payload); // Await the save operation to ensure completion
   return result;
 };
 
@@ -52,7 +51,7 @@ const updateOneCarData = async (carId: string, updateData: TCar) => {
   return result;
 };
 
-export const carServises = {
+export const carServices = {
   createCar,
   findAllCarData,
   findOneCarData,

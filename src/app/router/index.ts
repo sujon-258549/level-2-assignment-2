@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { carRouter } from '../car/car.router';
-import { orderRouter } from '../order/order.router';
+import { carRouter } from '../module/car/car.router';
+import { orderRouter } from '../module/order/order.router';
 
 const router = Router();
 
