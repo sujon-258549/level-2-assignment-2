@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
-import { carServises } from './car.servise';
+import { carServises as carServices } from './car.servise';
 import carZodSchemaValidaction from './car.zod';
+import { sendSuccess } from '../../utility/sendSuccess';
+import httpStatus from 'http-status';
 
 const createCar = async (req: Request, res: Response) => {
   try {
     const data = req.body;
-    // zod validaction
-    const zodValidactionCar = carZodSchemaValidaction.parse(data);
-    const result = await carServises.createCar(zodValidactionCar);
-    res.status(200).json({
+    // zod validation
+    const zodValidationCar = carZodSchemaValidaction.parse(data);
+    const result = await carServices.createCar(zodValidationCar);
+    sendSuccess(res, {
+      statusCod: httpStatus.CREATED,
+      success: true,
       message: 'Car created successfully',
-      status: true,
       data: result,
     });
   } catch (error) {
@@ -25,7 +28,7 @@ const createCar = async (req: Request, res: Response) => {
 
 const findAllcarC = async (req: Request, res: Response) => {
   try {
-    const result = await carServises.findAllCarData(req.query);
+    const result = await carServices.findAllCarData(req.query);
     res.status(200).json({
       message: 'Cars retrieved successfully',
       status: true,
@@ -43,7 +46,7 @@ const findAllcarC = async (req: Request, res: Response) => {
 const findOneCar = async (req: Request, res: Response) => {
   try {
     const { carId } = req.params;
-    const result = await carServises.findOneCarData(carId);
+    const result = await carServices.findOneCarData(carId);
     res.status(200).json({
       message: 'Cars retrieved successfully',
       status: true,
@@ -63,7 +66,7 @@ const updateCar = async (req: Request, res: Response) => {
     const { carId } = req.params; // Get carId from URL params
     const updateData = req.body; // Get data to update from the request body
 
-    const updatedCar = await carServises.updateOneCarData(carId, updateData); // Call the update function
+    const updatedCar = await carServices.updateOneCarData(carId, updateData); // Call the update function
     // Return success response with the updated car data
     res.status(200).json({
       message: 'Car updated successfully',
@@ -82,7 +85,7 @@ const deleteCar = async (req: Request, res: Response) => {
   try {
     const { carId } = req.params; // Get carId from URL params
 
-    await carServises.deleteSingleCarData(carId); // Call the update function
+    await carServices.deleteSingleCarData(carId); // Call the update function
     // Return success response with the updated car data
     res.status(200).json({
       status: true,
