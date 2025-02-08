@@ -18,6 +18,37 @@ const createorder = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getAllOrder = catchAsync(async (req: Request, res: Response) => {
+  const data = req?.query;
+  const result = await orderServices.getAllOrder(data);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    message: 'All Order retrieved successfully',
+    success: true,
+    meta: result.meta,
+    data: result,
+  });
+});
+const getOneOrder = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await orderServices.getOneOrder(id);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    message: 'Order retrieved successfully',
+    success: true,
+    data: result,
+  });
+});
+const deleteOrder = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await orderServices.deleteOrder(id);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    message: 'Order delete successfully',
+    success: true,
+    data: result,
+  });
+});
 
 const getRevenue = catchAsync(async (req: Request, res: Response) => {
   const revenue = await OrderModel.aggregate([
@@ -47,4 +78,7 @@ const getRevenue = catchAsync(async (req: Request, res: Response) => {
 export const orderController = {
   createorder,
   getRevenue,
+  getAllOrder,
+  getOneOrder,
+  deleteOrder,
 };

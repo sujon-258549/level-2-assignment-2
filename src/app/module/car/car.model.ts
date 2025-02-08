@@ -14,6 +14,9 @@ const carSchema = new Schema<TCar>(
       type: String,
       required: [true, 'Model is required'],
     },
+    image: {
+      type: String,
+    },
     year: {
       type: Number,
       required: [true, 'Year is required'],

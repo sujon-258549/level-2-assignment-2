@@ -1,5 +1,7 @@
+import QueryBuilder from '../../builder/builder';
 import { CarModel } from '../car/car.model';
 import { TOrder } from './order.interface';
+import { OrderModel } from './order.model';
 
 const createOrder = async (order: TOrder) => {
   console.log(order?.car);
@@ -20,6 +22,29 @@ const createOrder = async (order: TOrder) => {
   //   return result;
 };
 
+const getAllOrder = async (query: Record<string, unknown>) => {
+  const orderCar = new QueryBuilder(OrderModel.find(), query)
+    // .search(searchBleFild)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await orderCar.countTotal();
+  const data = await orderCar.modelQuery;
+  return { meta, data };
+};
+const getOneOrder = async (id: string) => {
+  const result = await OrderModel.findById(id);
+  return result;
+};
+const deleteOrder = async (id: string) => {
+  const result = await OrderModel.findByIdAndDelete(id);
+  return result;
+};
+
 export const orderServices = {
   createOrder,
+  getAllOrder,
+  getOneOrder,
+  deleteOrder,
 };

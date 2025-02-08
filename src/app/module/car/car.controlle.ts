@@ -22,6 +22,7 @@ const findAllcarC = catchAsync(async (req: Request, res: Response) => {
     statusCod: httpStatus.OK,
     success: true,
     message: 'Cars retrieved successfully',
+    meta: result?.meta,
     data: result,
   });
 });

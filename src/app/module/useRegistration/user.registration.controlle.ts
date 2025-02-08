@@ -15,6 +15,27 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const findAllUser = catchAsync(async (req: Request, res: Response) => {
+  const query = req?.query;
+  const result = await userRegistrationServices.getAllUser(query);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    success: true,
+    message: 'All User retrieved successfully',
+    meta: result?.meta,
+    data: result,
+  });
+});
+const findOneUser = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await userRegistrationServices.getOneUser(id);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    success: true,
+    message: 'User retrieved successfully',
+    data: result,
+  });
+});
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
   const result = await userRegistrationServices.loginUser(data);
@@ -26,4 +47,9 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const userRegistrationController = { createUser, loginUser };
+export const userRegistrationController = {
+  createUser,
+  loginUser,
+  findAllUser,
+  findOneUser,
+};

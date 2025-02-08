@@ -1,7 +1,8 @@
+import QueryBuilder from '../../builder/builder';
 import { TCar } from './car.interface';
 import { CarModel } from './car.model';
 import { ObjectId } from 'mongodb';
-
+const searchBleFild = ['brand', 'model', 'category'];
 // Function to create a new car entry
 const createCar = async (payload: TCar) => {
   const result = await CarModel.create(payload); // Await the save operation to ensure completion
@@ -10,18 +11,15 @@ const createCar = async (payload: TCar) => {
 
 // Function to find all car data
 const findAllCarData = async (query: Record<string, unknown>) => {
-  let searchTerm = '';
-
-  if (query.searchTerm) {
-    searchTerm = query.searchTerm as string;
-  }
-
-  const result = await CarModel.find({
-    $or: ['brand', 'model', 'category'].map((field) => ({
-      [field]: { $regex: searchTerm, $options: 'i' },
-    })),
-  });
-  return result;
+  const car = new QueryBuilder(CarModel.find(), query)
+    .search(searchBleFild)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await car.countTotal();
+  const data = await car.modelQuery;
+  return { meta, data };
 };
 
 // Function to find a car by its ID

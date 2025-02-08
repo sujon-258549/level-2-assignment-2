@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 import { createToken } from './utils';
+import QueryBuilder from '../../builder/builder';
 // create user
 const createdUser = async (payload: TUserRegistration) => {
   const password = payload.password;
@@ -50,7 +51,26 @@ const loginUser = async (payload: TLoginUser) => {
     token,
   };
 };
+
+const getAllUser = async (query: Record<string, unknown>) => {
+  const orderCar = new QueryBuilder(UserModel.find(), query)
+    // .search(searchBleFild)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await orderCar.countTotal();
+  const data = await orderCar.modelQuery;
+  return { meta, data };
+};
+const getOneUser = async (_id: string) => {
+  const result = await UserModel.findById(_id);
+  return result;
+};
+
 export const userRegistrationServices = {
   createdUser,
   loginUser,
+  getAllUser,
+  getOneUser,
 };
