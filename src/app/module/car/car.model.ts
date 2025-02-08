@@ -41,7 +41,8 @@ const carSchema = new Schema<TCar>(
     },
     inStock: {
       type: Boolean,
-      required: [true, 'Stock status is required'],
+      required: [false, 'Quantity is required'],
+      default: true,
     },
   },
   {
