@@ -25,13 +25,11 @@ class QueryBuilder<T> {
 
   filter() {
     const queryObject = { ...this.query };
-
+    console.log(queryObject);
     const excludeField = ['searchTerm', 'sort', 'limit', 'page', 'field'];
-
     //   delete esrch tram
     excludeField.forEach((el) => delete queryObject[el]);
     this.modelQuery = this.modelQuery.find(queryObject as FilterQuery<T>);
-
     return this;
   }
 
