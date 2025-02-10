@@ -39,9 +39,10 @@ const deleteSingleCarData = async (carId: string) => {
 
 const updateOneCarData = async (carId: string, updateData: TCar) => {
   // Use lowercase 'string' for consistency
-
+  console.log(updateData);
   const result = await CarModel.findByIdAndUpdate(
     new ObjectId(carId),
+
     updateData,
     { new: true },
   ); // Convert string _id to ObjectId

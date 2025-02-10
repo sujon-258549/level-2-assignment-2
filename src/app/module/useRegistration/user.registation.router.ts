@@ -7,10 +7,15 @@ import auth, { userRole } from '../../utility/auth';
 const router = Router();
 
 router.post('/registered', userRegistrationController.createUser);
+router.post(
+  '/change-password',
+  //   auth(userRole.admin, userRole.user),
+  userRegistrationController.changePassword,
+);
 router.get('/', auth(userRole.admin), userRegistrationController.findAllUser);
 router.get(
   '/:id',
-  auth(userRole.admin, userRole.user),
+  //   auth(userRole.admin, userRole.user),
   userRegistrationController.findOneUser,
 );
 

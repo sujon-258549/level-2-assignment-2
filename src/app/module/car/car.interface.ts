@@ -1,7 +1,7 @@
 export interface TCar {
   brand: 'Toyota' | 'BMW' | 'Ford'; // The brand or manufacturer of the car
   model: string; // The model of the car
-  image?: string;
+  image: string;
   year: number; // The year of manufacture
   price: number; // Price of the car
   category: 'Sedan' | 'SUV' | 'Truck' | 'Coupe' | 'Convertible'; // The type of car (using the enum)

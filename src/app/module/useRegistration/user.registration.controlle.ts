@@ -46,10 +46,23 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
+const changePassword = catchAsync(async (req, res) => {
+  const { ...passwordData } = req.body;
+  const result = await userRegistrationServices.changePassword(
+    req.headers.authorization as string,
+    passwordData,
+  );
+  sendSuccess(res, {
+    statusCod: httpStatus.CREATED,
+    success: true,
+    message: 'Cheng password is success',
+    data: result,
+  });
+});
 export const userRegistrationController = {
   createUser,
   loginUser,
   findAllUser,
   findOneUser,
+  changePassword,
 };
