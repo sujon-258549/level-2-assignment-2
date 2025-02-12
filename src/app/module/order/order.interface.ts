@@ -3,9 +3,44 @@
 // quantity (number): The quantity of the ordered car.
 // totalPrice (number): The total price (car price * quantity).
 // import { Types } from 'mongoose';
-export interface TOrder {
-  email: string; // The email address of the customer
-  car: string; // Reference to the car ID in the database
-  quantity: number; // Quantity of the ordered car
-  totalPrice: number; // Total price (car price * quantity)
+// export interface TOrder {
+//   car: string; // Reference to the car ID in the database
+//   quantity: number; // Quantity of the ordered car
+// }
+
+// export interface TUserInfo {
+//   email?: string;
+//   name?: string;
+// }
+
+// export interface TTotalPrice {
+//   totalPrice: number;
+// }
+
+import { Document, Types } from 'mongoose';
+
+export interface IOrder extends Document {
+  user: Types.ObjectId;
+  products: {
+    car: Types.ObjectId;
+    quantity: number;
+  }[];
+  totalPrice: number;
+  status: 'Pending' | 'Paid' | 'Shipped' | 'Completed' | 'Cancelled';
+  transaction: {
+    id: string;
+    transactionStatus: string;
+    bank_status: string;
+    sp_code: string;
+    sp_message: string;
+    method: string;
+    date_time: string;
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
 }
+
+export type TOrder = {
+  car: Types.ObjectId;
+  quantity: number;
+};

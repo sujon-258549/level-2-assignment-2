@@ -46,8 +46,8 @@ const auth = (...requiredRoles: TUserRole[]) => {
       );
     }
     req.user = decoded;
-    //   console.log(user);
-    //   console.log(decoded);
+    // console.log(user);
+    // console.log(decoded);
 
     next();
   });

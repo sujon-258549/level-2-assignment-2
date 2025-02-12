@@ -1,62 +1,50 @@
-/* eslint-disable @typescript-eslint/no-this-alias */
 import { model, Schema } from 'mongoose';
-import { TOrder } from './order.interface';
-import { CarModel } from '../car/car.model';
-import AppError from '../../Error/appError';
-import httpStatus from 'http-status';
+import { IOrder } from './order.interface';
 
-const OrderSchema = new Schema<TOrder>(
+const OrderSchema = new Schema<IOrder>(
   {
-    email: {
-      type: String,
-      required: true, // Ensure email is provided
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
-    car: {
-      //   type: Schema.Types.ObjectId, // Storing the car ID as a string
-      type: String, // Storing the car ID as a string
-      required: true, // Ensure car ID is provided
-    },
-
-    quantity: {
-      type: Number,
-      required: true, // Ensure quantity is provided
-      min: 1, // Minimum quantity is 1
-    },
+    products: [
+      {
+        car: {
+          type: Schema.Types.ObjectId,
+          ref: 'car-callection',
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
     totalPrice: {
       type: Number,
-      required: true, // Ensure totalPrice is provided
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['Pending', 'Paid', 'Shipped', 'Completed', 'Cancelled'],
+      default: 'Pending',
+    },
+    transaction: {
+      id: String,
+      transactionStatus: String,
+      bank_status: String,
+      sp_code: String,
+      sp_message: String,
+      method: String,
+      date_time: String,
     },
   },
   {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
+    timestamps: true,
   },
 );
 
-// Pre-save middleware to calculate `totalPrice`
+const OrderModel = model<IOrder>('Order', OrderSchema);
 
-// Pre-save middleware to calculate totalPrice
-OrderSchema.pre('save', async function (next) {
-  const order = this;
-  // Fetch car details to get the price
-  const car = await CarModel.findById(order.car);
-
-  if (!car) {
-    throw new AppError(httpStatus.OK, 'Car not found');
-  }
-
-  if (!car.inStock) {
-    throw new AppError(httpStatus.OK, 'Car out of stock');
-  }
-
-  // Check if the requested quantity exceeds the available stock
-  if (order.quantity >= car.quantity) {
-    throw new Error(
-      `Requested quantity exceeds available stock. Available: ${car.quantity}`,
-    );
-  }
-  // Calculate totalPrice
-  order.totalPrice = car.price * order.quantity;
-  next();
-});
-
-export const OrderModel = model<TOrder>('Order', OrderSchema);
+export default OrderModel;

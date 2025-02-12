@@ -15,6 +15,6 @@ router.delete(
   auth(userRole.admin, userRole.user),
   orderController.deleteOrder,
 );
-router.get('/revenue', orderController.getRevenue);
+// router.get('/revenue', orderController.getRevenue);
 
 export const orderRouter = router;
