@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import config from '../../config';
 import { createToken } from './utils';
 import QueryBuilder from '../../builder/builder';
-
+const searchBleFild = ['name', 'email'];
 // create user
 const createdUser = async (payload: TUserRegistration) => {
   const password = payload.password;
@@ -55,7 +55,7 @@ const loginUser = async (payload: TLoginUser) => {
 
 const getAllUser = async (query: Record<string, unknown>) => {
   const orderCar = new QueryBuilder(UserModel.find(), query)
-    // .search(searchBleFild)
+    .search(searchBleFild)
     .filter()
     .sort()
     .paginate()
