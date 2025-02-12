@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Shurjopay from 'shurjopay';
+import Shurjopay, { PaymentResponse } from 'shurjopay';
 import config from '../../config';
 
 const shurjopay = new Shurjopay();
@@ -12,7 +12,9 @@ shurjopay.config(
   config.sp.sp_return_url!,
 );
 
-const makePayment = async (makePaymentPayload: any) => {
+const makePayment = async (
+  makePaymentPayload: any,
+): Promise<PaymentResponse> => {
   return new Promise((resolve, rejects) => {
     shurjopay.makePayment(
       makePaymentPayload,
@@ -28,6 +30,17 @@ const makePayment = async (makePaymentPayload: any) => {
   //   return paymentResult;
 };
 
+const verifyPayment = (order_id: string) => {
+  return new Promise((resolve, rejects) => {
+    shurjopay.verifyPayment(
+      order_id,
+      (response) => resolve(response),
+      (error) => rejects(error),
+    );
+  });
+};
+
 export const orderUtils = {
   makePayment,
+  verifyPayment,
 };

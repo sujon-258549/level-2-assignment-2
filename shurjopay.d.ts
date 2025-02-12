@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 declare module 'shurjopay' {
   import { Logger } from 'winston';
 
