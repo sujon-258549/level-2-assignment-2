@@ -36,16 +36,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderRouter = void 0;
-const express_1 = __importDefault(require("express"));
-const order_controlle_1 = require("./order.controlle");
+exports.userRegistrationRouter = void 0;
+const express_1 = require("express");
+const user_registration_controlle_1 = require("./user.registration.controlle");
+const zodValidaction_1 = __importDefault(require("../../utility/zodValidaction"));
+const user_zod_Validaction_1 = __importDefault(require("./user.zod.Validaction"));
 const auth_1 = __importStar(require("../../utility/auth"));
-const router = express_1.default.Router();
-router.get('/verify', (0, auth_1.default)(auth_1.userRole.user), order_controlle_1.orderController.verifyPayment);
-router.post('/', (0, auth_1.default)(auth_1.userRole.user), order_controlle_1.orderController.createorder);
-router.get('/', (0, auth_1.default)(auth_1.userRole.admin), order_controlle_1.orderController.getAllOrder);
-router.get('/get-myorder', (0, auth_1.default)(auth_1.userRole.user), order_controlle_1.orderController.getMyOrder);
-router.get('/:id', (0, auth_1.default)(auth_1.userRole.admin, auth_1.userRole.user), order_controlle_1.orderController.getOneOrder);
-router.delete('/id', (0, auth_1.default)(auth_1.userRole.admin, auth_1.userRole.user), order_controlle_1.orderController.deleteOrder);
-// router.get('/revenue', orderController.getRevenue);
-exports.orderRouter = router;
+const router = (0, express_1.Router)();
+router.post('/registered', user_registration_controlle_1.userRegistrationController.createUser);
+router.post('/change-password', 
+//   auth(userRole.admin, userRole.user),
+user_registration_controlle_1.userRegistrationController.changePassword);
+router.get('/', (0, auth_1.default)(auth_1.userRole.admin), user_registration_controlle_1.userRegistrationController.findAllUser);
+router.get('/:id', 
+//   auth(userRole.admin, userRole.user),
+user_registration_controlle_1.userRegistrationController.findOneUser);
+router.post('/login', (0, zodValidaction_1.default)(user_zod_Validaction_1.default), user_registration_controlle_1.userRegistrationController.loginUser);
+exports.userRegistrationRouter = router;

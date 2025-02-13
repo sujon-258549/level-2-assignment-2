@@ -14,6 +14,9 @@ const carSchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'Model is required'],
     },
+    image: {
+        type: String,
+    },
     year: {
         type: Number,
         required: [true, 'Year is required'],
@@ -38,7 +41,8 @@ const carSchema = new mongoose_1.Schema({
     },
     inStock: {
         type: Boolean,
-        required: [true, 'Stock status is required'],
+        required: [false, 'Quantity is required'],
+        default: true,
     },
 }, {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

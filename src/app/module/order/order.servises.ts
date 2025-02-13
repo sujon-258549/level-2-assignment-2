@@ -66,6 +66,7 @@ const createOrder = async (
   console.log('payment', payment?.transactionStatus);
 
   if (payment?.transactionStatus) {
+    // @ts-expect-error order
     order = await OrderModel.findByIdAndUpdate(
       order._id,
       {
@@ -161,6 +162,7 @@ const getMyOrder = async (email: string, query: Record<string, unknown>) => {
   const existUser = await UserModel.findOne({ email: email });
   console.log(existUser);
   const orderCar = new QueryBuilder(
+    // @ts-expect-error existUser
     OrderModel.find({ user: existUser._id })
       .populate('user')
       .populate('products.car'),

@@ -1,50 +1,45 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderModel = void 0;
-/* eslint-disable @typescript-eslint/no-this-alias */
 const mongoose_1 = require("mongoose");
 const OrderSchema = new mongoose_1.Schema({
-    email: {
-        type: String,
-        required: true, // Ensure email is provided
+    user: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
     },
-    car: {
-        //   type: Schema.Types.ObjectId, // Storing the car ID as a string
-        type: String, // Storing the car ID as a string
-        required: true, // Ensure car ID is provided
-    },
-    quantity: {
-        type: Number,
-        required: true, // Ensure quantity is provided
-        min: 1, // Minimum quantity is 1
-    },
+    products: [
+        {
+            car: {
+                type: mongoose_1.Schema.Types.ObjectId,
+                ref: 'car-callection',
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
     totalPrice: {
         type: Number,
-        required: true, // Ensure totalPrice is provided
+        required: true,
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Paid', 'Shipped', 'Completed', 'Cancelled'],
+        default: 'Pending',
+    },
+    transaction: {
+        id: String,
+        transactionStatus: String,
+        bank_status: String,
+        sp_code: String,
+        sp_message: String,
+        method: String,
+        date_time: String,
     },
 }, {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
+    timestamps: true,
 });
-// Pre-save middleware to calculate `totalPrice`
-// Pre-save middleware to calculate totalPrice
-// OrderSchema.pre('save', async function (next) {
-//   const order = this;
-//   // Fetch car details to get the price
-//   const car = await CarModel.findById(order.car);
-//   if (!car) {
-//     throw new Error('Car not found');
-//   }
-//   if (!car.inStock) {
-//     throw new Error('Car is out of stock');
-//   }
-//   // Check if the requested quantity exceeds the available stock
-//   if (order.quantity >= car.quantity) {
-//     throw new Error(
-//       `Requested quantity exceeds available stock. Available: ${car.quantity}`,
-//     );
-//   }
-//   // Calculate totalPrice
-//   order.totalPrice = car.price * order.quantity;
-//   next();
-// });
-exports.OrderModel = (0, mongoose_1.model)('Order', OrderSchema);
+const OrderModel = (0, mongoose_1.model)('Order', OrderSchema);
+exports.default = OrderModel;
