@@ -154,6 +154,17 @@ const getAllOrder = async (query: Record<string, unknown>) => {
   const data = await orderCar.modelQuery;
   return { meta, data };
 };
+const getMyOrder = async (email: string, query: Record<string, unknown>) => {
+  const orderCar = new QueryBuilder(OrderModel.find({ email: email }), query)
+    // .search(searchBleFild)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await orderCar.countTotal();
+  const data = await orderCar.modelQuery;
+  return { meta, data };
+};
 const getOneOrder = async (id: string) => {
   const result = await OrderModel.findById(id);
   return result;
@@ -169,4 +180,5 @@ export const orderServices = {
   getOneOrder,
   deleteOrder,
   verifyPayment,
+  getMyOrder,
 };

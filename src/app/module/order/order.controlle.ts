@@ -36,6 +36,18 @@ const getAllOrder = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getMyOrder = catchAsync(async (req: Request, res: Response) => {
+  const data = req?.query;
+  const email = req?.user?.email;
+  const result = await orderServices.getMyOrder(email, data);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    message: 'My Order retrieved successfully',
+    success: true,
+    meta: result.meta,
+    data: result,
+  });
+});
 const getOneOrder = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await orderServices.getOneOrder(id);
@@ -89,4 +101,5 @@ export const orderController = {
   getOneOrder,
   deleteOrder,
   verifyPayment,
+  getMyOrder,
 };
