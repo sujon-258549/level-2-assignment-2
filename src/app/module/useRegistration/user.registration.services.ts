@@ -54,7 +54,7 @@ const loginUser = async (payload: TLoginUser) => {
 };
 
 const getAllUser = async (query: Record<string, unknown>) => {
-  const orderCar = new QueryBuilder(UserModel.find(), query)
+  const orderCar = new QueryBuilder(UserModel.find({ role: 'user' }), query)
     .search(searchBleFild)
     .filter()
     .sort()

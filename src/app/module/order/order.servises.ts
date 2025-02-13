@@ -144,7 +144,10 @@ const verifyPayment = async (order_id: string) => {
 };
 
 const getAllOrder = async (query: Record<string, unknown>) => {
-  const orderCar = new QueryBuilder(OrderModel.find(), query)
+  const orderCar = new QueryBuilder(
+    OrderModel.find().populate('user').populate('products.car'),
+    query,
+  )
     // .search(searchBleFild)
     .filter()
     .sort()
@@ -155,7 +158,14 @@ const getAllOrder = async (query: Record<string, unknown>) => {
   return { meta, data };
 };
 const getMyOrder = async (email: string, query: Record<string, unknown>) => {
-  const orderCar = new QueryBuilder(OrderModel.find({ email: email }), query)
+  const existUser = await UserModel.findOne({ email: email });
+  console.log(existUser);
+  const orderCar = new QueryBuilder(
+    OrderModel.find({ user: existUser._id })
+      .populate('user')
+      .populate('products.car'),
+    query,
+  )
     // .search(searchBleFild)
     .filter()
     .sort()
