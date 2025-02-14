@@ -12,6 +12,7 @@ const app = (0, express_1.default)();
 // const port = 3000;
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({ origin: 'https://car-shop-one-indol.vercel.app' }));
+// app.use(cors());
 app.use('/api', router_1.default);
 app.get('/', (req, res) => {
     res.send('Assign meat Service on ');
