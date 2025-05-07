@@ -6,7 +6,11 @@ const router = express.Router();
 router.get('/verify', auth(userRole.user), orderController.verifyPayment);
 router.post('/', auth(userRole.user), orderController.createorder);
 router.get('/', auth(userRole.admin), orderController.getAllOrder);
-router.get('/get-myorder', auth(userRole.user), orderController.getMyOrder);
+router.get(
+  '/get-myorder',
+  auth(userRole.user, userRole.admin),
+  orderController.getMyOrder,
+);
 router.get(
   '/:id',
   auth(userRole.admin, userRole.user),

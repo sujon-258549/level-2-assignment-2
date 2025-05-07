@@ -23,6 +23,7 @@ router.put(
   auth('admin'),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.user);
     req.body = JSON.parse(req.body.data);
     next();
   },

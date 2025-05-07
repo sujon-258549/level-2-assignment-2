@@ -7,10 +7,12 @@ import AppError from '../../Error/appError';
 import { UserModel } from '../useRegistration/user.registration.model';
 import { sendImageToCloudinary } from '../../utility/sendImageToCloudinary';
 import QueryBuilder from '../../builder/builder';
+const searchParams = ['title', 'excerpt', 'category', 'slug'];
 const createBlog = async (payload: IBlogPost, file: any, user: JwtPayload) => {
+  console.log(payload);
   const { id } = user;
   payload.id = id;
-  const isExistUser = await UserModel.findOne({ id });
+  const isExistUser = await UserModel.findById(id);
 
   if (!isExistUser) {
     return new AppError(status.NOT_FOUND, 'User not found');
@@ -44,6 +46,7 @@ const myBlogIntoDB = async (
     BlogPost.find({ id: user.id }).populate('authorId'),
     query,
   )
+    .search(searchParams)
     .sort()
     .fields()
     .filter();
@@ -68,6 +71,7 @@ const singleBlogIntoDB = async (id: string) => {
   return newUser;
 };
 const deleteBlogIntoDB = async (id: string) => {
+  console.log(id);
   const newUser = await BlogPost.findByIdAndDelete(id);
   return newUser;
 };
@@ -80,7 +84,7 @@ const updateBlog = async (
 ) => {
   const { id } = user;
   console.log(payload, file, user, blogId);
-  const isExistUser = await UserModel.findOne({ id });
+  const isExistUser = await UserModel.findById(id);
   if (!isExistUser) {
     throw new AppError(status.NOT_FOUND, 'User not found');
   }
