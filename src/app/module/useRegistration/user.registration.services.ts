@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import AppError from '../../Error/appError';
 import { TLoginUser, TUserRegistration } from './user.registration.interface';
 import { UserModel } from './user.registration.model';
@@ -7,13 +8,23 @@ import bcrypt from 'bcrypt';
 import config from '../../config';
 import { createToken } from './utils';
 import QueryBuilder from '../../builder/builder';
+import { sendImageToCloudinary } from '../../utility/sendImageToCloudinary';
 const searchBleFild = ['name', 'email'];
 // create user
-const createdUser = async (payload: TUserRegistration) => {
-  const password = payload.password;
-  const haspassword = await bcrypt.hash(password, 5);
-  console.log(haspassword);
-  const result = await UserModel.create({ ...payload, password: haspassword });
+const createdUser = async (payload: TUserRegistration, file: any) => {
+  console.log(file, payload);
+  if (file) {
+    const path = file.path;
+    const name = payload.firstName.replace(/\s+/g, '_').toLowerCase();
+
+    const { secure_url } = (await sendImageToCloudinary(name, path)) as {
+      secure_url: string;
+    };
+
+    payload.profileImage = secure_url;
+  }
+
+  const result = await UserModel.create(payload);
   return result;
 };
 // login user
@@ -40,6 +51,7 @@ const loginUser = async (payload: TLoginUser) => {
   const JwtPayload = {
     email: existingUser.email,
     role: existingUser.role as string,
+    id: existingUser._id,
   };
 
   const token = createToken(
@@ -64,8 +76,13 @@ const getAllUser = async (query: Record<string, unknown>) => {
   const data = await orderCar.modelQuery;
   return { meta, data };
 };
-const getOneUser = async (_id: string) => {
-  const result = await UserModel.findOne({ email: _id });
+const getOneUser = async (id: string) => {
+  const result = await UserModel.findById(id);
+  return result;
+};
+const getMe = async (user: JwtPayload) => {
+  console.log(user);
+  const result = await UserModel.findOne({ email: user.email });
   return result;
 };
 const changePassword = async (
@@ -100,10 +117,35 @@ const changePassword = async (
   return result;
 };
 
+const updateMe = async (
+  payload: Partial<TUserRegistration>,
+  file: any,
+  user: JwtPayload,
+) => {
+  if (file) {
+    const path = file.path;
+    const name = payload.firstName as string;
+
+    const { secure_url } = (await sendImageToCloudinary(name, path)) as {
+      secure_url: string;
+    };
+
+    payload.profileImage = secure_url;
+  }
+
+  const result = await UserModel.findOneAndUpdate(
+    { email: user.email },
+    payload,
+  );
+  return result;
+};
+
 export const userRegistrationServices = {
   createdUser,
   loginUser,
   getAllUser,
   getOneUser,
   changePassword,
+  getMe,
+  updateMe,
 };

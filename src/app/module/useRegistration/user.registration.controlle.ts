@@ -7,7 +7,7 @@ import { userRegistrationServices } from './user.registration.services';
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
-  const result = await userRegistrationServices.createdUser(data);
+  const result = await userRegistrationServices.createdUser(data, req.file);
   sendSuccess(res, {
     statusCod: httpStatus.CREATED,
     success: true,
@@ -29,6 +29,15 @@ const findAllUser = catchAsync(async (req: Request, res: Response) => {
 const findOneUser = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await userRegistrationServices.getOneUser(id);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    success: true,
+    message: 'User retrieved successfully',
+    data: result,
+  });
+});
+const getMe = catchAsync(async (req: Request, res: Response) => {
+  const result = await userRegistrationServices.getMe(req.user);
   sendSuccess(res, {
     statusCod: httpStatus.OK,
     success: true,
@@ -59,10 +68,27 @@ const changePassword = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const updateUser = catchAsync(async (req: Request, res: Response) => {
+  const data = req.body;
+  const result = await userRegistrationServices.updateMe(
+    data,
+    req.file,
+    req.user,
+  );
+  sendSuccess(res, {
+    statusCod: httpStatus.CREATED,
+    success: true,
+    message: 'User update successfully',
+    data: result,
+  });
+});
 export const userRegistrationController = {
   createUser,
   loginUser,
   findAllUser,
   findOneUser,
   changePassword,
+  getMe,
+  updateUser,
 };

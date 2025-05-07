@@ -1,8 +1,27 @@
 export type TUserRegistration = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  role: 'user' | 'admin';
   password: string;
+  role: 'user' | 'admin' | 'guest';
+  phoneNumber: string;
+  isActive?: boolean;
+  birthDate?: Date | string;
+  profileImage?: string;
+
+  // Detailed Address (Localized for regions like BD/IN)
+  address?: {
+    street: string;
+    street2?: string; // Apartment, suite, etc.
+    city: string;
+    state?: string; // Province/Division (e.g., "Dhaka Division")
+    district: string; // জেলা (e.g., "Dhaka", "Chittagong")
+    subdistrict?: string; // উপজেলা/Thana (e.g., "Savar", "Cox's Bazar Sadar")
+    village?: string; // গ্রাম (e.g., "Mohammadpur")
+    union?: string; // ইউনিয়ন (e.g., "Uttar Khan")
+    postalCode: string; // পোস্ট কোড (e.g., "1340")
+    country: string; // ISO code (e.g., "BD", "IN")
+  };
 };
 
 export type TLoginUser = {
