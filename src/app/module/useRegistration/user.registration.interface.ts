@@ -8,7 +8,7 @@ export type TUserRegistration = {
   isActive?: boolean;
   birthDate?: Date | string;
   profileImage?: string;
-
+  isShop?: false;
   // Detailed Address (Localized for regions like BD/IN)
   address?: {
     street: string;

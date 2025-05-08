@@ -1,11 +1,89 @@
+import { ObjectId } from 'mongoose';
+
 export interface TCar {
-  brand: 'Toyota' | 'BMW' | 'Ford'; // The brand or manufacturer of the car
-  model: string; // The model of the car
-  image: string;
-  year: number; // The year of manufacture
-  price: number; // Price of the car
-  category: 'Sedan' | 'SUV' | 'Truck' | 'Coupe' | 'Convertible'; // The type of car (using the enum)
-  description: string; // A brief description of the car's features
-  quantity: number; // Quantity of the car available
-  inStock?: boolean; // Indicates if the car is in stock
+  // Basic Identification
+  id?: ObjectId;
+  brand:
+    | 'Toyota'
+    | 'BMW'
+    | 'Ford'
+    | 'Honda'
+    | 'Mercedes'
+    | 'Audi'
+    | 'Tesla'
+    | string;
+  model: string;
+  trim?: string;
+  generation?: string;
+
+  // Visuals
+  image: string | string[];
+  color: string[];
+
+  // Specifications
+  year: number;
+  mileage?: number;
+  bodyType:
+    | 'Sedan'
+    | 'SUV'
+    | 'Truck'
+    | 'Coupe'
+    | 'Convertible'
+    | 'Hatchback'
+    | 'Minivan'
+    | 'Wagon';
+  seatingCapacity: number;
+  doors: number;
+  drivetrain: 'FWD' | 'RWD' | 'AWD' | '4WD';
+  transmission: 'Automatic' | 'Manual' | 'CVT' | 'DCT';
+  fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid' | 'Plug-in Hybrid';
+  engine?: {
+    size: string;
+    cylinders: number;
+    horsepower: number;
+    torque: number;
+    fuelEconomy?: {
+      city: number;
+      highway: number;
+      combined: number;
+    };
+  };
+  batteryCapacity?: number;
+  range?: number;
+
+  // Features
+  features: {
+    interior?: string[];
+    exterior?: string[];
+    safety?: string[];
+    infotainment?: string[];
+  };
+
+  // Pricing
+  price: number;
+  originalPrice?: number;
+  currency?: string;
+  leaseOptions?: {
+    monthlyPayment: number;
+    term: number;
+    downPayment: number;
+  };
+
+  // Inventory
+  quantity: number;
+  inStock: boolean;
+  offerDateAndTime: Date | string;
+  stockNumber?: string;
+  vin?: string;
+  condition: 'New' | 'Used' | 'Certified Pre-Owned';
+
+  // Additional Info
+  description: string;
+  rating?: number;
+  reviewCount?: number;
+  warranty?: {
+    type: string;
+    months: number;
+    miles: number;
+  };
 }

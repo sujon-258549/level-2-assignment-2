@@ -15,6 +15,9 @@ const OrderSchema = new Schema<IOrder>(
           ref: 'car-callection',
           required: true,
         },
+        color: {
+          type: Number,
+        },
         quantity: {
           type: Number,
           required: true,

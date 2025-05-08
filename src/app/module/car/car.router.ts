@@ -1,20 +1,34 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { carController } from './car.controlle';
-import zodValidation from '../../utility/zodValidaction';
-import carZodSchemaValidation from './car.zod';
-// import auth, { userRole } from '../../utility/auth';
+import auth from '../../utility/auth';
+import { upload } from '../../utility/sendImageToCloudinary';
 
 // create router
 const router = express.Router();
 
 router.post(
   '/',
-  zodValidation(carZodSchemaValidation),
+  auth('admin'),
+  upload.fields([{ name: 'images' }]),
+  (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body.data, req.files);
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   carController.createCar,
 );
 router.get('/', carController.findAllcarC);
 router.get('/:carId', carController.findOneCar);
-router.put('/:carId', carController.updateCar);
-router.delete('/:carId', carController.deleteCar);
+router.put(
+  '/:carId',
+  auth('admin'),
+  upload.fields([{ name: 'images' }]),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  carController.updateCar,
+);
+router.delete('/:carId', auth('admin'), carController.deleteCar);
 
 export const carRouter = router;

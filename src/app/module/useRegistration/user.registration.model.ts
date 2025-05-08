@@ -24,6 +24,7 @@ const userSchema = new Schema<TUserRegistration>(
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },
     profileImage: { type: String },
+    isShop: { type: Boolean, default: false },
     email: {
       type: String,
       required: true,

@@ -7,7 +7,8 @@ import catchAsync from '../../utility/catchAsync';
 
 const createCar = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
-  const result = await carServices.createCar(data);
+  // @ts-expect-error files
+  const result = await carServices.createCar(data, req.files, req.user);
   sendSuccess(res, {
     statusCod: httpStatus.CREATED,
     success: true,
@@ -42,7 +43,12 @@ const findOneCar = catchAsync(async (req: Request, res: Response) => {
 const updateCar = catchAsync(async (req: Request, res: Response) => {
   const { carId } = req.params; // Get carId from URL params
   const updateData = req.body; // Get data to update from the request body
-  const updatedCar = await carServices.updateOneCarData(carId, updateData); // Call the update function
+  const updatedCar = await carServices.updateOneCarData(
+    carId,
+    updateData,
+    // @ts-expect-error files
+    req.files,
+  ); // Call the update function
   // Return success response with the updated car data
   sendSuccess(res, {
     statusCod: httpStatus.CREATED,
