@@ -4,7 +4,7 @@ import { TLoginUser, TUserRegistration } from './user.registration.interface';
 import { UserModel } from './user.registration.model';
 import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 import config from '../../config';
 import { createToken } from './utils';
 import QueryBuilder from '../../builder/builder';
@@ -40,7 +40,7 @@ const loginUser = async (payload: TLoginUser) => {
     );
   }
 
-  const matchpassword = await bcrypt.compare(password, existingUser?.password);
+  const matchpassword = await argon2.verify(existingUser?.password, password);
   if (!matchpassword) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
@@ -105,11 +105,11 @@ const changePassword = async (
 
   const password = payload?.oldPassword;
   const hasPasswordData = exisEmail.password;
-  const comparePassword = await bcrypt.compare(password, hasPasswordData);
+  const comparePassword = await argon2.verify(hasPasswordData, password);
   if (!comparePassword) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'Insurrect old Password');
   }
-  const newPassword = await bcrypt.hash(payload.newPassword, 5);
+  const newPassword = await argon2.hash(payload.newPassword);
   const result = await UserModel.findOneAndUpdate(
     { email: exisEmail?.email },
     { password: newPassword },

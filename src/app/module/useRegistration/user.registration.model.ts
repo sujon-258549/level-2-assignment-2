@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { Schema, model } from 'mongoose';
 import { TUserRegistration } from './user.registration.interface';
-import bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 const addressSchema = new Schema(
   {
     street: { type: String, required: true, trim: true },
@@ -66,6 +66,6 @@ const userSchema = new Schema<TUserRegistration>(
 // Middleware to hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 8); // Use bcrypt or similar
+  this.password = await argon2.hash(this.password); // Use bcrypt or similar
 });
 export const UserModel = model<TUserRegistration>('User', userSchema);
