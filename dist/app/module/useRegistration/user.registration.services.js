@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18,7 +51,7 @@ const appError_1 = __importDefault(require("../../Error/appError"));
 const user_registration_model_1 = require("./user.registration.model");
 const http_status_1 = __importDefault(require("http-status"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const argon2 = __importStar(require("argon2"));
 const config_1 = __importDefault(require("../../config"));
 const utils_1 = require("./utils");
 const builder_1 = __importDefault(require("../../builder/builder"));
@@ -43,7 +76,7 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     if (!existingUser) {
         throw new appError_1.default(http_status_1.default.UNAUTHORIZED, 'User with this email does not exist.');
     }
-    const matchpassword = yield bcrypt_1.default.compare(password, existingUser === null || existingUser === void 0 ? void 0 : existingUser.password);
+    const matchpassword = yield argon2.verify(existingUser === null || existingUser === void 0 ? void 0 : existingUser.password, password);
     if (!matchpassword) {
         throw new appError_1.default(http_status_1.default.UNAUTHORIZED, 'User with this password does not exist.');
     }
@@ -90,11 +123,11 @@ const changePassword = (token, payload) => __awaiter(void 0, void 0, void 0, fun
     }
     const password = payload === null || payload === void 0 ? void 0 : payload.oldPassword;
     const hasPasswordData = exisEmail.password;
-    const comparePassword = yield bcrypt_1.default.compare(password, hasPasswordData);
+    const comparePassword = yield argon2.verify(hasPasswordData, password);
     if (!comparePassword) {
         throw new appError_1.default(http_status_1.default.UNAUTHORIZED, 'Insurrect old Password');
     }
-    const newPassword = yield bcrypt_1.default.hash(payload.newPassword, 5);
+    const newPassword = yield argon2.hash(payload.newPassword);
     const result = yield user_registration_model_1.UserModel.findOneAndUpdate({ email: exisEmail === null || exisEmail === void 0 ? void 0 : exisEmail.email }, { password: newPassword });
     return result;
 });

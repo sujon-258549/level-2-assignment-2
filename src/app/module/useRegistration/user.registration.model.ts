@@ -66,6 +66,6 @@ const userSchema = new Schema<TUserRegistration>(
 // Middleware to hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await argon2.hash(this.password); // Use bcrypt or similar
+  this.password = await argon2.hash(this.password);
 });
 export const UserModel = model<TUserRegistration>('User', userSchema);
