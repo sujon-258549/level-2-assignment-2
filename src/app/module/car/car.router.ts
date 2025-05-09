@@ -18,6 +18,8 @@ router.post(
   carController.createCar,
 );
 router.get('/', carController.findAllcarC);
+router.get('/regular', carController.findAllRegularCarData);
+router.get('/offer', carController.findOfferCar);
 router.get('/:carId', carController.findOneCar);
 router.put(
   '/:carId',

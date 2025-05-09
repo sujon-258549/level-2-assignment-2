@@ -20,17 +20,21 @@
 import { Document, Types } from 'mongoose';
 
 export interface IOrder extends Document {
-  user: Types.ObjectId;
+  customerId: Types.ObjectId;
+  shopId: Types.ObjectId;
+  quantity?: number;
+  colors?: string;
   products: {
     color?: string;
     car: Types.ObjectId;
     quantity: number;
   }[];
   totalPrice: number;
-  status: 'Pending' | 'Paid' | 'Shipped' | 'Completed' | 'Cancelled';
+  paymentStatus: 'Pending' | 'Paid' | 'Shipped' | 'Completed' | 'Cancelled';
+  deliveryStatus?: 'Pending' | 'Delivered';
   transaction: {
     id: string;
-    transactionStatus: string;
+    transactionStatus?: string;
     bank_status: string;
     sp_code: string;
     sp_message: string;

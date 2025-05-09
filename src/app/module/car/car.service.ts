@@ -51,6 +51,28 @@ const findAllCarData = async (query: Record<string, unknown>) => {
   const data = await car.modelQuery;
   return { meta, data };
 };
+const findAllRegularCarData = async (query: Record<string, unknown>) => {
+  const car = new QueryBuilder(CarModel.find({ isOffer: false }), query)
+    .search(searchBleFild)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await car.countTotal();
+  const data = await car.modelQuery;
+  return { meta, data };
+};
+const offerCar = async (query: Record<string, unknown>) => {
+  const car = new QueryBuilder(CarModel.find({ isOffer: true }), query)
+    .search(searchBleFild)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await car.countTotal();
+  const data = await car.modelQuery;
+  return { meta, data };
+};
 
 // Function to find a car by its ID
 const findOneCarData = async (carId: string) => {
@@ -59,11 +81,7 @@ const findOneCarData = async (carId: string) => {
   return result;
 };
 const deleteSingleCarData = async (carId: string) => {
-  // Use lowercase 'string' for consistency
-
-  const result = await CarModel.findByIdAndDelete({
-    _id: new ObjectId(carId),
-  }); // Convert string _id to ObjectId
+  const result = await CarModel.findByIdAndDelete(carId); // Convert string _id to ObjectId
   return result;
 };
 
@@ -102,4 +120,6 @@ export const carServices = {
   findOneCarData,
   updateOneCarData,
   deleteSingleCarData,
+  offerCar,
+  findAllRegularCarData,
 };

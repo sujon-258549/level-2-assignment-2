@@ -111,8 +111,6 @@ const carSchema = new Schema<TCar>(
     // Pricing
     price: {
       type: Number,
-      required: [true, 'Price is required'],
-      min: [0, 'Price must be positive'],
     },
     originalPrice: Number,
     currency: {
@@ -134,6 +132,10 @@ const carSchema = new Schema<TCar>(
     inStock: {
       type: Boolean,
       default: true,
+    },
+    isOffer: {
+      type: Boolean,
+      default: false,
     },
     stockNumber: { type: String },
     vin: {

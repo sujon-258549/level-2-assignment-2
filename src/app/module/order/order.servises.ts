@@ -9,15 +9,29 @@ import OrderModel from './order.model';
 
 const createOrder = async (
   userData: JwtPayload,
-  payload: { products: { car: string; quantity: number }[] },
+  payload: { products: { car: string; quantity: number; colors: string }[] },
   client_ip: string,
 ) => {
+  console.log(payload);
+  const totalQuantity = payload.products.reduce(
+    (sum, item) => sum + item.quantity,
+    0,
+  );
+
+  // Fix: Properly extract colors from payload
+  const colorsData = payload.products.map((product) => product.colors || ''); // Use empty string as fallback
+
   const existUser = await UserModel.findOne({ email: userData?.email });
   if (!existUser) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'User not Exist');
   }
-  console.log(existUser);
 
+  const existCar = await CarModel.findById(payload.products[0].car);
+  console.log(existCar);
+
+  if (!existCar) {
+    throw new AppError(httpStatus.NOT_ACCEPTABLE, 'Order is not specified');
+  }
   if (!payload?.products?.length) {
     throw new AppError(httpStatus.NOT_ACCEPTABLE, 'Order is not specified');
   }
@@ -29,8 +43,15 @@ const createOrder = async (
         const product = await CarModel.findById(item.car);
 
         if (product && product.inStock && product.quantity >= item.quantity) {
-          totalPrice += (product.price || 0) * item.quantity;
-          return { car: product._id, quantity: item.quantity };
+          totalPrice +=
+            (product?.originalPrice && product.originalPrice > 0
+              ? product.originalPrice
+              : product?.price || 0) * item.quantity;
+          return {
+            car: product._id,
+            quantity: item.quantity,
+            colors: item.colors || '', // Include colors in product details
+          };
         } else {
           throw new AppError(
             httpStatus.BAD_REQUEST,
@@ -43,9 +64,12 @@ const createOrder = async (
 
   // Create the order
   let order = await OrderModel.create({
-    user: existUser._id,
+    customerId: existUser._id,
+    shopId: existCar.id,
     products: productDetails,
+    quantity: totalQuantity,
     totalPrice,
+    colors: colorsData,
   });
 
   // Payment integration
@@ -53,11 +77,11 @@ const createOrder = async (
     amount: totalPrice,
     order_id: order._id,
     currency: 'BDT',
-    customer_name: existUser.name,
+    customer_name: existUser.firstName,
     customer_address: 'Bangladesh',
     customer_email: existUser.email,
-    customer_phone: '+8801790876529',
-    customer_city: 'Rangpur Bangladesh',
+    customer_phone: existUser.phoneNumber || '+8801790876529',
+    customer_city: existUser?.address?.street || 'Rangpur Bangladesh',
     client_ip,
   };
 
@@ -75,13 +99,12 @@ const createOrder = async (
           transactionStatus: payment.transactionStatus,
         },
       },
-      { new: true }, // Return updated order
+      { new: true },
     );
   }
 
   return payment.checkout_url;
 };
-
 // const verifyPayment = async (order_id: string) => {
 //   const verifiedPayment = await orderUtils.verifyPayment(order_id);
 

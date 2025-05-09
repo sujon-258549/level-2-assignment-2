@@ -4,7 +4,11 @@ import auth, { userRole } from '../../utility/auth';
 
 const router = express.Router();
 router.get('/verify', auth(userRole.user), orderController.verifyPayment);
-router.post('/', auth(userRole.user), orderController.createorder);
+router.post(
+  '/',
+  auth(userRole.user, userRole.admin),
+  orderController.createorder,
+);
 router.get('/', auth(userRole.admin), orderController.getAllOrder);
 router.get(
   '/get-myorder',

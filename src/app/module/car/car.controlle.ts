@@ -27,6 +27,28 @@ const findAllcarC = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const findAllRegularCarData = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await carServices.findAllRegularCarData(req.query);
+    sendSuccess(res, {
+      statusCod: httpStatus.OK,
+      success: true,
+      message: 'Cars retrieved successfully',
+      meta: result?.meta,
+      data: result,
+    });
+  },
+);
+const findOfferCar = catchAsync(async (req: Request, res: Response) => {
+  const result = await carServices.offerCar(req.query);
+  sendSuccess(res, {
+    statusCod: httpStatus.OK,
+    success: true,
+    message: 'Offer Cars retrieved successfully',
+    meta: result?.meta,
+    data: result,
+  });
+});
 
 const findOneCar = catchAsync(async (req: Request, res: Response) => {
   const { carId } = req.params;
@@ -75,4 +97,6 @@ export const carController = {
   findOneCar,
   updateCar,
   deleteCar,
+  findOfferCar,
+  findAllRegularCarData,
 };

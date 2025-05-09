@@ -60,7 +60,7 @@ export interface TCar {
   };
 
   // Pricing
-  price: number;
+  price?: number;
   originalPrice?: number;
   currency?: string;
   leaseOptions?: {
@@ -72,6 +72,7 @@ export interface TCar {
   // Inventory
   quantity: number;
   inStock: boolean;
+  isOffer: boolean;
   offerDateAndTime: Date | string;
   stockNumber?: string;
   vin?: string;

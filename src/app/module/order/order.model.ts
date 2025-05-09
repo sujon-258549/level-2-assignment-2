@@ -3,10 +3,21 @@ import { IOrder } from './order.interface';
 
 const OrderSchema = new Schema<IOrder>(
   {
-    user: {
+    customerId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
+    },
+    shopId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    quantity: {
+      quantity: Number,
+    },
+    colors: {
+      type: [String],
     },
     products: [
       {
@@ -28,9 +39,14 @@ const OrderSchema = new Schema<IOrder>(
       type: Number,
       required: true,
     },
-    status: {
+    paymentStatus: {
       type: String,
       enum: ['Pending', 'Paid', 'Shipped', 'Completed', 'Cancelled'],
+      default: 'Pending',
+    },
+    deliveryStatus: {
+      type: String,
+      enum: ['Pending', 'Delivered'],
       default: 'Pending',
     },
     transaction: {
