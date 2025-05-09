@@ -36,7 +36,7 @@ export interface TCar {
   doors: number;
   drivetrain: 'FWD' | 'RWD' | 'AWD' | '4WD';
   transmission: 'Automatic' | 'Manual' | 'CVT' | 'DCT';
-  fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid' | 'Plug-in Hybrid';
+  fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid' | 'Hybrid';
   engine?: {
     size: string;
     cylinders: number;
@@ -61,7 +61,7 @@ export interface TCar {
 
   // Pricing
   price?: number;
-  originalPrice?: number;
+  originalPrice: number;
   currency?: string;
   leaseOptions?: {
     monthlyPayment: number;

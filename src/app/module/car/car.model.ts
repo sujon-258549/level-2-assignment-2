@@ -83,7 +83,7 @@ const carSchema = new Schema<TCar>(
     },
     fuelType: {
       type: String,
-      enum: ['Gasoline', 'Diesel', 'Electric', 'Hybrid', 'Plug-in Hybrid'],
+      enum: ['Gasoline', 'Diesel', 'Electric', 'Hybrid', 'Hybrid'],
       required: [true, 'Fuel type is required'],
     },
     engine: {
@@ -202,7 +202,7 @@ carSchema.virtual('formattedPrice').get(function (this: ICar) {
 
 // Is electric vehicle
 carSchema.virtual('isElectric').get(function (this: ICar) {
-  return this.fuelType === 'Electric' || this.fuelType === 'Plug-in Hybrid';
+  return this.fuelType === 'Electric' || this.fuelType === 'Hybrid';
 });
 
 // Age of the car in years
