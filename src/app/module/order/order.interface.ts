@@ -23,13 +23,9 @@ export interface IOrder extends Document {
   customerId: Types.ObjectId;
   shopId: Types.ObjectId;
   quantity?: number;
-  colors?: string;
-  products: {
-    color?: string;
-    car: Types.ObjectId;
-    quantity: number;
-  }[];
+  color?: string;
   totalPrice: number;
+  productId: Types.ObjectId;
   paymentStatus: 'Pending' | 'Paid' | 'Shipped' | 'Completed' | 'Cancelled';
   deliveryStatus?: 'Pending' | 'Delivered';
   transaction: {

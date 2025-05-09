@@ -10,31 +10,21 @@ const OrderSchema = new Schema<IOrder>(
     },
     shopId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'CarShop',
       required: true,
     },
     quantity: {
       quantity: Number,
     },
-    colors: {
-      type: [String],
+    productId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Car',
     },
-    products: [
-      {
-        car: {
-          type: Schema.Types.ObjectId,
-          ref: 'car-callection',
-          required: true,
-        },
-        color: {
-          type: Number,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
+    color: {
+      type: String,
+    },
+
     totalPrice: {
       type: Number,
       required: true,

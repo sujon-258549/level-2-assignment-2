@@ -19,7 +19,8 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utility/catchAsync"));
 const createCar = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
-    const result = yield car_service_1.carServices.createCar(data);
+    // @ts-expect-error files
+    const result = yield car_service_1.carServices.createCar(data, req.files, req.user);
     (0, sendSuccess_1.sendSuccess)(res, {
         statusCod: http_status_1.default.CREATED,
         success: true,
@@ -33,6 +34,26 @@ const findAllcarC = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         statusCod: http_status_1.default.OK,
         success: true,
         message: 'Cars retrieved successfully',
+        meta: result === null || result === void 0 ? void 0 : result.meta,
+        data: result,
+    });
+}));
+const findAllRegularCarData = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield car_service_1.carServices.findAllRegularCarData(req.query);
+    (0, sendSuccess_1.sendSuccess)(res, {
+        statusCod: http_status_1.default.OK,
+        success: true,
+        message: 'Cars retrieved successfully',
+        meta: result === null || result === void 0 ? void 0 : result.meta,
+        data: result,
+    });
+}));
+const findOfferCar = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield car_service_1.carServices.offerCar(req.query);
+    (0, sendSuccess_1.sendSuccess)(res, {
+        statusCod: http_status_1.default.OK,
+        success: true,
+        message: 'Offer Cars retrieved successfully',
         meta: result === null || result === void 0 ? void 0 : result.meta,
         data: result,
     });
@@ -51,7 +72,9 @@ const findOneCar = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 const updateCar = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { carId } = req.params; // Get carId from URL params
     const updateData = req.body; // Get data to update from the request body
-    const updatedCar = yield car_service_1.carServices.updateOneCarData(carId, updateData); // Call the update function
+    const updatedCar = yield car_service_1.carServices.updateOneCarData(carId, updateData, 
+    // @ts-expect-error files
+    req.files); // Call the update function
     // Return success response with the updated car data
     (0, sendSuccess_1.sendSuccess)(res, {
         statusCod: http_status_1.default.CREATED,
@@ -76,4 +99,6 @@ exports.carController = {
     findOneCar,
     updateCar,
     deleteCar,
+    findOfferCar,
+    findAllRegularCarData,
 };

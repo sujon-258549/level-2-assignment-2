@@ -9,72 +9,40 @@ import OrderModel from './order.model';
 
 const createOrder = async (
   userData: JwtPayload,
-  payload: { products: { car: string; quantity: number; colors: string }[] },
+  payload: { car: string; quantity: number; colors: string },
   client_ip: string,
 ) => {
-  console.log(payload);
-  const totalQuantity = payload.products.reduce(
-    (sum, item) => sum + item.quantity,
-    0,
-  );
-
-  // Fix: Properly extract colors from payload
-  const colorsData = payload.products.map((product) => product.colors || ''); // Use empty string as fallback
-
+  console.log('.....................', payload);
   const existUser = await UserModel.findOne({ email: userData?.email });
   if (!existUser) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'User not Exist');
   }
 
-  const existCar = await CarModel.findById(payload.products[0].car);
-  console.log(existCar);
+  const existCar = await CarModel.findOne({ _id: payload.car });
 
   if (!existCar) {
     throw new AppError(httpStatus.NOT_ACCEPTABLE, 'Order is not specified');
   }
-  if (!payload?.products?.length) {
-    throw new AppError(httpStatus.NOT_ACCEPTABLE, 'Order is not specified');
-  }
-
   let totalPrice = 0;
-  const productDetails = (
-    await Promise.all(
-      payload.products.map(async (item) => {
-        const product = await CarModel.findById(item.car);
-
-        if (product && product.inStock && product.quantity >= item.quantity) {
-          totalPrice +=
-            (product?.originalPrice && product.originalPrice > 0
-              ? product.originalPrice
-              : product?.price || 0) * item.quantity;
-          return {
-            car: product._id,
-            quantity: item.quantity,
-            colors: item.colors || '', // Include colors in product details
-          };
-        } else {
-          throw new AppError(
-            httpStatus.BAD_REQUEST,
-            `Car ID ${item.car} is out of stock`,
-          );
-        }
-      }),
-    )
-  ).filter(Boolean); // Remove undefined entries
+  if (Number(existCar?.price) > 0) {
+    totalPrice = Number(existCar?.price) * Number(payload.quantity);
+  } else {
+    totalPrice = Number(existCar?.originalPrice) * Number(payload.quantity);
+  }
 
   // Create the order
   let order = await OrderModel.create({
     customerId: existUser._id,
     shopId: existCar.id,
-    products: productDetails,
-    quantity: totalQuantity,
-    totalPrice,
-    colors: colorsData,
+    productId: existCar._id,
+    quantity: payload.quantity,
+    totalPrice: totalPrice,
+    color: payload.colors,
   });
 
   // Payment integration
   const shurjopayPayload = {
-    amount: totalPrice,
+    amount: 50,
     order_id: order._id,
     currency: 'BDT',
     customer_name: existUser.firstName,
@@ -135,6 +103,7 @@ const createOrder = async (
 //   return verifiedPayment;
 // };
 const verifyPayment = async (order_id: string) => {
+  console.log(order_id);
   const verifiedPayment = await orderUtils.verifyPayment(order_id);
 
   if (Array.isArray(verifiedPayment) && verifiedPayment.length > 0) {
@@ -169,7 +138,10 @@ const verifyPayment = async (order_id: string) => {
 
 const getAllOrder = async (query: Record<string, unknown>) => {
   const orderCar = new QueryBuilder(
-    OrderModel.find().populate('user').populate('products.car'),
+    OrderModel.find()
+      .populate('customerId')
+      .populate('shopId')
+      .populate('productId'),
     query,
   )
     // .search(searchBleFild)
@@ -181,14 +153,15 @@ const getAllOrder = async (query: Record<string, unknown>) => {
   const data = await orderCar.modelQuery;
   return { meta, data };
 };
-const getMyOrder = async (email: string, query: Record<string, unknown>) => {
-  const existUser = await UserModel.findOne({ email: email });
+const getMyOrder = async (id: string, query: Record<string, unknown>) => {
+  const existUser = await UserModel.findOne({ _id: id });
   console.log(existUser);
   const orderCar = new QueryBuilder(
     // @ts-expect-error existUser
-    OrderModel.find({ user: existUser._id })
-      .populate('user')
-      .populate('products.car'),
+    OrderModel.find({ customerId: existUser._id })
+      .populate('customerId')
+      .populate('shopId')
+      .populate('productId'),
     query,
   )
     // .search(searchBleFild)
@@ -201,7 +174,10 @@ const getMyOrder = async (email: string, query: Record<string, unknown>) => {
   return { meta, data };
 };
 const getOneOrder = async (id: string) => {
-  const result = await OrderModel.findById(id);
+  const result = await OrderModel.findById(id)
+    .populate('customerId')
+    .populate('shopId')
+    .populate('productId');
   return result;
 };
 const deleteOrder = async (id: string) => {

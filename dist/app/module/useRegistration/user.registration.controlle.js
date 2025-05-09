@@ -30,7 +30,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const user_registration_services_1 = require("./user.registration.services");
 const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
-    const result = yield user_registration_services_1.userRegistrationServices.createdUser(data);
+    const result = yield user_registration_services_1.userRegistrationServices.createdUser(data, req.file);
     (0, sendSuccess_1.sendSuccess)(res, {
         statusCod: http_status_1.default.CREATED,
         success: true,
@@ -59,6 +59,15 @@ const findOneUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: result,
     });
 }));
+const getMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_registration_services_1.userRegistrationServices.getMe(req.user);
+    (0, sendSuccess_1.sendSuccess)(res, {
+        statusCod: http_status_1.default.OK,
+        success: true,
+        message: 'User retrieved successfully',
+        data: result,
+    });
+}));
 const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
     const result = yield user_registration_services_1.userRegistrationServices.loginUser(data);
@@ -79,10 +88,22 @@ const changePassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         data: result,
     });
 }));
+const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = req.body;
+    const result = yield user_registration_services_1.userRegistrationServices.updateMe(data, req.file, req.user);
+    (0, sendSuccess_1.sendSuccess)(res, {
+        statusCod: http_status_1.default.CREATED,
+        success: true,
+        message: 'User update successfully',
+        data: result,
+    });
+}));
 exports.userRegistrationController = {
     createUser,
     loginUser,
     findAllUser,
     findOneUser,
     changePassword,
+    getMe,
+    updateUser,
 };

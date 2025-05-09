@@ -42,14 +42,23 @@ const user_registration_controlle_1 = require("./user.registration.controlle");
 const zodValidaction_1 = __importDefault(require("../../utility/zodValidaction"));
 const user_zod_Validaction_1 = __importDefault(require("./user.zod.Validaction"));
 const auth_1 = __importStar(require("../../utility/auth"));
+const sendImageToCloudinary_1 = require("../../utility/sendImageToCloudinary");
 const router = (0, express_1.Router)();
-router.post('/registered', user_registration_controlle_1.userRegistrationController.createUser);
+router.post('/registered', sendImageToCloudinary_1.upload.single('file'), (req, res, next) => {
+    console.log(req.user);
+    req.body = JSON.parse(req.body.data);
+    next();
+}, user_registration_controlle_1.userRegistrationController.createUser);
 router.post('/change-password', 
 //   auth(userRole.admin, userRole.user),
 user_registration_controlle_1.userRegistrationController.changePassword);
 router.get('/', (0, auth_1.default)(auth_1.userRole.admin), user_registration_controlle_1.userRegistrationController.findAllUser);
-router.get('/:id', 
-//   auth(userRole.admin, userRole.user),
-user_registration_controlle_1.userRegistrationController.findOneUser);
+router.get('/me', (0, auth_1.default)(auth_1.userRole.user, auth_1.userRole.admin), user_registration_controlle_1.userRegistrationController.getMe);
+router.get('/:id', (0, auth_1.default)(auth_1.userRole.admin, auth_1.userRole.user), user_registration_controlle_1.userRegistrationController.findOneUser);
 router.post('/login', (0, zodValidaction_1.default)(user_zod_Validaction_1.default), user_registration_controlle_1.userRegistrationController.loginUser);
+router.put('/', (0, auth_1.default)(auth_1.userRole.admin, auth_1.userRole.user), sendImageToCloudinary_1.upload.single('file'), (req, res, next) => {
+    console.log(req.user);
+    req.body = JSON.parse(req.body.data);
+    next();
+}, user_registration_controlle_1.userRegistrationController.updateUser);
 exports.userRegistrationRouter = router;

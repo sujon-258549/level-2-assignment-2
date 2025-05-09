@@ -38,8 +38,8 @@ const getAllOrder = catchAsync(async (req: Request, res: Response) => {
 });
 const getMyOrder = catchAsync(async (req: Request, res: Response) => {
   const data = req?.query;
-  const email = req?.user?.email;
-  const result = await orderServices.getMyOrder(email, data);
+  const id = req?.user?.id;
+  const result = await orderServices.getMyOrder(id, data);
   sendSuccess(res, {
     statusCod: httpStatus.OK,
     message: 'My Order retrieved successfully',
@@ -50,6 +50,7 @@ const getMyOrder = catchAsync(async (req: Request, res: Response) => {
 });
 const getOneOrder = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
+  console.log('id......................', id);
   const result = await orderServices.getOneOrder(id);
   sendSuccess(res, {
     statusCod: httpStatus.OK,

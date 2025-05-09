@@ -2,31 +2,39 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const OrderSchema = new mongoose_1.Schema({
-    user: {
+    customerId: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    products: [
-        {
-            car: {
-                type: mongoose_1.Schema.Types.ObjectId,
-                ref: 'car-callection',
-                required: true,
-            },
-            quantity: {
-                type: Number,
-                required: true,
-            },
-        },
-    ],
+    shopId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'CarShop',
+        required: true,
+    },
+    quantity: {
+        quantity: Number,
+    },
+    productId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Car',
+    },
+    color: {
+        type: String,
+    },
     totalPrice: {
         type: Number,
         required: true,
     },
-    status: {
+    paymentStatus: {
         type: String,
         enum: ['Pending', 'Paid', 'Shipped', 'Completed', 'Cancelled'],
+        default: 'Pending',
+    },
+    deliveryStatus: {
+        type: String,
+        enum: ['Pending', 'Delivered'],
         default: 'Pending',
     },
     transaction: {

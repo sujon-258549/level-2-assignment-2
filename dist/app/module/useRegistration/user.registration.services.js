@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRegistrationServices = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const appError_1 = __importDefault(require("../../Error/appError"));
 const user_registration_model_1 = require("./user.registration.model");
 const http_status_1 = __importDefault(require("http-status"));
@@ -21,13 +22,18 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../../config"));
 const utils_1 = require("./utils");
 const builder_1 = __importDefault(require("../../builder/builder"));
+const sendImageToCloudinary_1 = require("../../utility/sendImageToCloudinary");
 const searchBleFild = ['name', 'email'];
 // create user
-const createdUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const password = payload.password;
-    const haspassword = yield bcrypt_1.default.hash(password, 5);
-    console.log(haspassword);
-    const result = yield user_registration_model_1.UserModel.create(Object.assign(Object.assign({}, payload), { password: haspassword }));
+const createdUser = (payload, file) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(file, payload);
+    if (file) {
+        const path = file.path;
+        const name = payload.firstName.replace(/\s+/g, '_').toLowerCase();
+        const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, path));
+        payload.profileImage = secure_url;
+    }
+    const result = yield user_registration_model_1.UserModel.create(payload);
     return result;
 });
 // login user
@@ -44,6 +50,7 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const JwtPayload = {
         email: existingUser.email,
         role: existingUser.role,
+        id: existingUser._id,
     };
     const token = (0, utils_1.createToken)(JwtPayload, config_1.default.JWT_ACCESS_TOKEN, config_1.default.JWT_ACCESS_TOKEN_EXPIRE_IN_ACCESSION);
     return {
@@ -61,8 +68,13 @@ const getAllUser = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield orderCar.modelQuery;
     return { meta, data };
 });
-const getOneUser = (_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_registration_model_1.UserModel.findOne({ email: _id });
+const getOneUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_registration_model_1.UserModel.findById(id);
+    return result;
+});
+const getMe = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(user);
+    const result = yield user_registration_model_1.UserModel.findOne({ email: user.email });
     return result;
 });
 const changePassword = (token, payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -86,10 +98,22 @@ const changePassword = (token, payload) => __awaiter(void 0, void 0, void 0, fun
     const result = yield user_registration_model_1.UserModel.findOneAndUpdate({ email: exisEmail === null || exisEmail === void 0 ? void 0 : exisEmail.email }, { password: newPassword });
     return result;
 });
+const updateMe = (payload, file, user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (file) {
+        const path = file.path;
+        const name = payload.firstName;
+        const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, path));
+        payload.profileImage = secure_url;
+    }
+    const result = yield user_registration_model_1.UserModel.findOneAndUpdate({ email: user.email }, payload);
+    return result;
+});
 exports.userRegistrationServices = {
     createdUser,
     loginUser,
     getAllUser,
     getOneUser,
     changePassword,
+    getMe,
+    updateMe,
 };

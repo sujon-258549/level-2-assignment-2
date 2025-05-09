@@ -3,7 +3,11 @@ import { orderController } from './order.controlle';
 import auth, { userRole } from '../../utility/auth';
 
 const router = express.Router();
-router.get('/verify', auth(userRole.user), orderController.verifyPayment);
+router.get(
+  '/verify',
+  auth(userRole.user, userRole.admin),
+  orderController.verifyPayment,
+);
 router.post(
   '/',
   auth(userRole.user, userRole.admin),

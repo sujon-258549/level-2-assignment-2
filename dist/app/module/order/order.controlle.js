@@ -52,8 +52,8 @@ const getAllOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
 const getMyOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const data = req === null || req === void 0 ? void 0 : req.query;
-    const email = (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.email;
-    const result = yield order_servises_1.orderServices.getMyOrder(email, data);
+    const id = (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id;
+    const result = yield order_servises_1.orderServices.getMyOrder(id, data);
     (0, sendSuccess_1.sendSuccess)(res, {
         statusCod: http_status_1.default.OK,
         message: 'My Order retrieved successfully',
@@ -64,6 +64,7 @@ const getMyOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 }));
 const getOneOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    console.log('id......................', id);
     const result = yield order_servises_1.orderServices.getOneOrder(id);
     (0, sendSuccess_1.sendSuccess)(res, {
         statusCod: http_status_1.default.OK,

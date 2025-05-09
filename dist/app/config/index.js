@@ -20,4 +20,9 @@ exports.default = {
         sp_return_url: process.env.SP_RETURN_URL,
         db_file: process.env.DB_FILE,
     },
+    cloudinary: {
+        cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
+        cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
+    },
 };

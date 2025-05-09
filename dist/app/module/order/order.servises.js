@@ -22,41 +22,41 @@ const order_utils_1 = require("./order.utils");
 const order_model_1 = __importDefault(require("./order.model"));
 const createOrder = (userData, payload, client_ip) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
+    console.log('.....................', payload);
     const existUser = yield user_registration_model_1.UserModel.findOne({ email: userData === null || userData === void 0 ? void 0 : userData.email });
     if (!existUser) {
         throw new appError_1.default(http_status_1.default.UNAUTHORIZED, 'User not Exist');
     }
-    console.log(existUser);
-    if (!((_a = payload === null || payload === void 0 ? void 0 : payload.products) === null || _a === void 0 ? void 0 : _a.length)) {
+    const existCar = yield car_model_1.CarModel.findOne({ _id: payload.car });
+    if (!existCar) {
         throw new appError_1.default(http_status_1.default.NOT_ACCEPTABLE, 'Order is not specified');
     }
     let totalPrice = 0;
-    const productDetails = (yield Promise.all(payload.products.map((item) => __awaiter(void 0, void 0, void 0, function* () {
-        const product = yield car_model_1.CarModel.findById(item.car);
-        if (product && product.inStock && product.quantity >= item.quantity) {
-            totalPrice += (product.price || 0) * item.quantity;
-            return { car: product._id, quantity: item.quantity };
-        }
-        else {
-            throw new appError_1.default(http_status_1.default.BAD_REQUEST, `Car ID ${item.car} is out of stock`);
-        }
-    })))).filter(Boolean); // Remove undefined entries
+    if (Number(existCar === null || existCar === void 0 ? void 0 : existCar.price) > 0) {
+        totalPrice = Number(existCar === null || existCar === void 0 ? void 0 : existCar.price) * Number(payload.quantity);
+    }
+    else {
+        totalPrice = Number(existCar === null || existCar === void 0 ? void 0 : existCar.originalPrice) * Number(payload.quantity);
+    }
     // Create the order
     let order = yield order_model_1.default.create({
-        user: existUser._id,
-        products: productDetails,
-        totalPrice,
+        customerId: existUser._id,
+        shopId: existCar.id,
+        productId: existCar._id,
+        quantity: payload.quantity,
+        totalPrice: totalPrice,
+        color: payload.colors,
     });
     // Payment integration
     const shurjopayPayload = {
-        amount: totalPrice,
+        amount: 50,
         order_id: order._id,
         currency: 'BDT',
-        customer_name: existUser.name,
+        customer_name: existUser.firstName,
         customer_address: 'Bangladesh',
         customer_email: existUser.email,
-        customer_phone: '+8801790876529',
-        customer_city: 'Rangpur Bangladesh',
+        customer_phone: existUser.phoneNumber || '+8801790876529',
+        customer_city: ((_a = existUser === null || existUser === void 0 ? void 0 : existUser.address) === null || _a === void 0 ? void 0 : _a.street) || 'Rangpur Bangladesh',
         client_ip,
     };
     const payment = yield order_utils_1.orderUtils.makePayment(shurjopayPayload);
@@ -101,6 +101,7 @@ const createOrder = (userData, payload, client_ip) => __awaiter(void 0, void 0, 
 // };
 const verifyPayment = (order_id) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f;
+    console.log(order_id);
     const verifiedPayment = yield order_utils_1.orderUtils.verifyPayment(order_id);
     if (Array.isArray(verifiedPayment) && verifiedPayment.length > 0) {
         const paymentData = verifiedPayment[0]; // Avoid repeated indexing
@@ -125,7 +126,10 @@ const verifyPayment = (order_id) => __awaiter(void 0, void 0, void 0, function* 
     return verifiedPayment;
 });
 const getAllOrder = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const orderCar = new builder_1.default(order_model_1.default.find().populate('user').populate('products.car'), query)
+    const orderCar = new builder_1.default(order_model_1.default.find()
+        .populate('customerId')
+        .populate('shopId')
+        .populate('productId'), query)
         // .search(searchBleFild)
         .filter()
         .sort()
@@ -135,14 +139,15 @@ const getAllOrder = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield orderCar.modelQuery;
     return { meta, data };
 });
-const getMyOrder = (email, query) => __awaiter(void 0, void 0, void 0, function* () {
-    const existUser = yield user_registration_model_1.UserModel.findOne({ email: email });
+const getMyOrder = (id, query) => __awaiter(void 0, void 0, void 0, function* () {
+    const existUser = yield user_registration_model_1.UserModel.findOne({ _id: id });
     console.log(existUser);
     const orderCar = new builder_1.default(
     // @ts-expect-error existUser
-    order_model_1.default.find({ user: existUser._id })
-        .populate('user')
-        .populate('products.car'), query)
+    order_model_1.default.find({ customerId: existUser._id })
+        .populate('customerId')
+        .populate('shopId')
+        .populate('productId'), query)
         // .search(searchBleFild)
         .filter()
         .sort()
@@ -153,7 +158,10 @@ const getMyOrder = (email, query) => __awaiter(void 0, void 0, void 0, function*
     return { meta, data };
 });
 const getOneOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield order_model_1.default.findById(id);
+    const result = yield order_model_1.default.findById(id)
+        .populate('customerId')
+        .populate('shopId')
+        .populate('productId');
     return result;
 });
 const deleteOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
