@@ -1,13 +1,12 @@
 import { JwtPayload } from 'jsonwebtoken';
 import QueryBuilder from '../../builder/builder';
 import { sendImageToCloudinary } from '../../utility/sendImageToCloudinary';
-import { TCar } from './car.interface';
+import { searchTram, TCar } from './car.interface';
 import { CarModel } from './car.model';
 import { ObjectId } from 'mongodb';
 import { UserModel } from '../useRegistration/user.registration.model';
 import httpStatus from 'http-status';
 import AppError from '../../Error/appError';
-const searchBleFild = ['brand', 'model', 'category'];
 // Function to create a new car entry
 const createCar = async (
   payload: TCar,
@@ -42,7 +41,7 @@ const createCar = async (
 // Function to find all car data
 const findAllCarData = async (query: Record<string, unknown>) => {
   const car = new QueryBuilder(CarModel.find(), query)
-    .search(searchBleFild)
+    .search(searchTram)
     .filter()
     .sort()
     .paginate()
@@ -53,7 +52,7 @@ const findAllCarData = async (query: Record<string, unknown>) => {
 };
 const findAllRegularCarData = async (query: Record<string, unknown>) => {
   const car = new QueryBuilder(CarModel.find({ isOffer: false }), query)
-    .search(searchBleFild)
+    .search(searchTram)
     .filter()
     .sort()
     .paginate()
@@ -64,7 +63,7 @@ const findAllRegularCarData = async (query: Record<string, unknown>) => {
 };
 const offerCar = async (query: Record<string, unknown>) => {
   const car = new QueryBuilder(CarModel.find({ isOffer: true }), query)
-    .search(searchBleFild)
+    .search(searchTram)
     .filter()
     .sort()
     .paginate()

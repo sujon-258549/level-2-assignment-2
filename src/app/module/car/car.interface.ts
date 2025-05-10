@@ -88,3 +88,15 @@ export interface TCar {
     miles: number;
   };
 }
+
+export const searchTram = [
+  'fuelType',
+  'transmission',
+  'drivetrain',
+  'bodyType',
+  'generation',
+  'drivetrain',
+  'trim',
+  ' brand',
+  '',
+];
