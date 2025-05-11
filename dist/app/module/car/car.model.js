@@ -11,8 +11,9 @@ const carSchema = new mongoose_1.Schema({
         enum: ['Toyota', 'BMW', 'Ford', 'Honda', 'Mercedes', 'Audi', 'Tesla'],
         required: [true, 'Brand is required'],
     },
-    id: {
+    shopId: {
         type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'CarShop',
     },
     model: {
         type: String,
@@ -80,7 +81,7 @@ const carSchema = new mongoose_1.Schema({
     },
     fuelType: {
         type: String,
-        enum: ['Gasoline', 'Diesel', 'Electric', 'Hybrid', ' Hybrid'],
+        enum: ['Gasoline', 'Diesel', 'Electric', 'Hybrid', 'Hybrid'],
         required: [true, 'Fuel type is required'],
     },
     engine: {
@@ -181,7 +182,7 @@ carSchema.virtual('formattedPrice').get(function () {
 });
 // Is electric vehicle
 carSchema.virtual('isElectric').get(function () {
-    return this.fuelType === 'Electric' || this.fuelType === 'Plug-in Hybrid';
+    return this.fuelType === 'Electric' || this.fuelType === 'Hybrid';
 });
 // Age of the car in years
 carSchema.virtual('age').get(function () {

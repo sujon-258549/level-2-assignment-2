@@ -13,7 +13,7 @@ router.post('/create-shop', (0, auth_1.default)('admin'), sendImageToCloudinary_
     req.body = JSON.parse(req.body.data);
     next();
 }, shop_controller_1.ShopControllers.createShop);
-router.get('/my-shop', (0, auth_1.default)('admin'), shop_controller_1.ShopControllers.getMyShop);
+router.get('/my-shop', shop_controller_1.ShopControllers.getMyShop);
 router.put('/update-shop', (0, auth_1.default)('admin'), sendImageToCloudinary_1.upload.single('file'), (req, res, next) => {
     req.body = JSON.parse(req.body.data);
     next();

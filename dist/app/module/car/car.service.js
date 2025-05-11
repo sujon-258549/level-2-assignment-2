@@ -15,25 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.carServices = void 0;
 const builder_1 = __importDefault(require("../../builder/builder"));
 const sendImageToCloudinary_1 = require("../../utility/sendImageToCloudinary");
+const car_interface_1 = require("./car.interface");
 const car_model_1 = require("./car.model");
 const mongodb_1 = require("mongodb");
-const user_registration_model_1 = require("../useRegistration/user.registration.model");
 const http_status_1 = __importDefault(require("http-status"));
 const appError_1 = __importDefault(require("../../Error/appError"));
-const searchBleFild = ['brand', 'model', 'category'];
+const shop_model_1 = require("../shop/shop.model");
 // Function to create a new car entry
 const createCar = (payload, productImage, user) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const existUser = yield user_registration_model_1.UserModel.findById(user.id);
-    if (!existUser) {
+    const existShop = yield shop_model_1.CarShop.findOne({ authorShopId: user.id });
+    if (!existShop) {
         throw new appError_1.default(http_status_1.default.UNAUTHORIZED, 'User not found');
     }
     // @ts-expect-error ids
-    payload.id = existUser._id;
+    payload.shopId = existShop._id;
     if (((_a = productImage === null || productImage === void 0 ? void 0 : productImage.images) === null || _a === void 0 ? void 0 : _a.length) > 0) {
         const uploadedUrls = [];
         for (const img of productImage.images) {
-            const name = payload.brand;
+            const name = `${payload.brand}-${Math.floor(Math.random() * 1000)}`;
             const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, img.path));
             uploadedUrls.push(secure_url);
         }
@@ -45,7 +45,7 @@ const createCar = (payload, productImage, user) => __awaiter(void 0, void 0, voi
 // Function to find all car data
 const findAllCarData = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const car = new builder_1.default(car_model_1.CarModel.find(), query)
-        .search(searchBleFild)
+        .search(car_interface_1.searchTram)
         .filter()
         .sort()
         .paginate()
@@ -56,7 +56,7 @@ const findAllCarData = (query) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const findAllRegularCarData = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const car = new builder_1.default(car_model_1.CarModel.find({ isOffer: false }), query)
-        .search(searchBleFild)
+        .search(car_interface_1.searchTram)
         .filter()
         .sort()
         .paginate()
@@ -67,7 +67,7 @@ const findAllRegularCarData = (query) => __awaiter(void 0, void 0, void 0, funct
 });
 const offerCar = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const car = new builder_1.default(car_model_1.CarModel.find({ isOffer: true }), query)
-        .search(searchBleFild)
+        .search(car_interface_1.searchTram)
         .filter()
         .sort()
         .paginate()
@@ -91,7 +91,7 @@ const updateOneCarData = (carId, updateData, productImage) => __awaiter(void 0, 
     if (((_a = productImage === null || productImage === void 0 ? void 0 : productImage.images) === null || _a === void 0 ? void 0 : _a.length) > 0) {
         const uploadedUrls = [];
         for (const img of productImage.images) {
-            const name = updateData.brand;
+            const name = `${updateData.brand}-${Math.floor(Math.random() * 1000)}`;
             const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, img.path));
             uploadedUrls.push(secure_url);
         }

@@ -21,6 +21,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const createorder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
     const user = req.user;
+    console.log(req.body);
     const result = yield order_servises_1.orderServices.createOrder(user, data, req.ip);
     (0, sendSuccess_1.sendSuccess)(res, {
         statusCod: http_status_1.default.CREATED,

@@ -22,12 +22,12 @@ const order_utils_1 = require("./order.utils");
 const order_model_1 = __importDefault(require("./order.model"));
 const createOrder = (userData, payload, client_ip) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    console.log('.....................', payload);
     const existUser = yield user_registration_model_1.UserModel.findOne({ email: userData === null || userData === void 0 ? void 0 : userData.email });
     if (!existUser) {
         throw new appError_1.default(http_status_1.default.UNAUTHORIZED, 'User not Exist');
     }
     const existCar = yield car_model_1.CarModel.findOne({ _id: payload.car });
+    console.log(existCar, '.........................');
     if (!existCar) {
         throw new appError_1.default(http_status_1.default.NOT_ACCEPTABLE, 'Order is not specified');
     }
@@ -38,18 +38,19 @@ const createOrder = (userData, payload, client_ip) => __awaiter(void 0, void 0, 
     else {
         totalPrice = Number(existCar === null || existCar === void 0 ? void 0 : existCar.originalPrice) * Number(payload.quantity);
     }
+    console.log('exis car and use', existCar, existUser);
     // Create the order
-    let order = yield order_model_1.default.create({
-        customerId: existUser._id,
-        shopId: existCar.id,
-        productId: existCar._id,
-        quantity: payload.quantity,
+    const order = yield order_model_1.default.create({
+        customerId: existUser === null || existUser === void 0 ? void 0 : existUser._id,
+        shopId: existCar === null || existCar === void 0 ? void 0 : existCar.shopId,
+        productId: existCar === null || existCar === void 0 ? void 0 : existCar._id,
+        quantity: payload === null || payload === void 0 ? void 0 : payload.quantity,
         totalPrice: totalPrice,
         color: payload.colors,
     });
     // Payment integration
     const shurjopayPayload = {
-        amount: 50,
+        amount: totalPrice,
         order_id: order._id,
         currency: 'BDT',
         customer_name: existUser.firstName,
@@ -60,10 +61,8 @@ const createOrder = (userData, payload, client_ip) => __awaiter(void 0, void 0, 
         client_ip,
     };
     const payment = yield order_utils_1.orderUtils.makePayment(shurjopayPayload);
-    console.log('payment', payment === null || payment === void 0 ? void 0 : payment.transactionStatus);
     if (payment === null || payment === void 0 ? void 0 : payment.transactionStatus) {
-        // @ts-expect-error order
-        order = yield order_model_1.default.findByIdAndUpdate(order._id, {
+        yield order_model_1.default.findByIdAndUpdate(order._id, {
             transaction: {
                 id: payment.sp_order_id,
                 transactionStatus: payment.transactionStatus,
@@ -101,10 +100,12 @@ const createOrder = (userData, payload, client_ip) => __awaiter(void 0, void 0, 
 // };
 const verifyPayment = (order_id) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f;
-    console.log(order_id);
     const verifiedPayment = yield order_utils_1.orderUtils.verifyPayment(order_id);
+    // console.log(order_id, JverifiedPayment);
+    // console.log('verifiedPayment', verifiedPayment);
     if (Array.isArray(verifiedPayment) && verifiedPayment.length > 0) {
         const paymentData = verifiedPayment[0]; // Avoid repeated indexing
+        console.log('paymentData', paymentData);
         yield order_model_1.default.findOneAndUpdate({ 'transaction.id': order_id }, {
             $set: {
                 'transaction.bank_status': (_a = paymentData.bank_status) !== null && _a !== void 0 ? _a : '',
@@ -113,7 +114,7 @@ const verifyPayment = (order_id) => __awaiter(void 0, void 0, void 0, function* 
                 'transaction.transactionStatus': (_d = paymentData.transaction_status) !== null && _d !== void 0 ? _d : '',
                 'transaction.method': (_e = paymentData.method) !== null && _e !== void 0 ? _e : '',
                 'transaction.date_time': (_f = paymentData.date_time) !== null && _f !== void 0 ? _f : '',
-                status: paymentData.bank_status === 'Success'
+                paymentStatus: paymentData.bank_status === 'Success'
                     ? 'Paid'
                     : paymentData.bank_status === 'Failed'
                         ? 'Pending'

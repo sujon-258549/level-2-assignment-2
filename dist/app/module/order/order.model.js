@@ -5,19 +5,16 @@ const OrderSchema = new mongoose_1.Schema({
     customerId: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
     },
     shopId: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'CarShop',
-        required: true,
     },
     quantity: {
         quantity: Number,
     },
     productId: {
         type: mongoose_1.Schema.Types.ObjectId,
-        required: true,
         ref: 'Car',
     },
     color: {

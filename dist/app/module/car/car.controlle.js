@@ -29,6 +29,7 @@ const createCar = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
     });
 }));
 const findAllcarC = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.query);
     const result = yield car_service_1.carServices.findAllCarData(req.query);
     (0, sendSuccess_1.sendSuccess)(res, {
         statusCod: http_status_1.default.OK,

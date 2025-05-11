@@ -28,8 +28,7 @@ const createShop = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const getMyShop = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield shop_service_1.carShopServices.getMyShopIntoDB(data);
+    const result = yield shop_service_1.carShopServices.getMyShopIntoDB();
     (0, sendSuccess_1.sendSuccess)(res, {
         statusCod: http_status_1.status.CREATED,
         success: true,

@@ -65,8 +65,8 @@ const createShopIntoDB = (payload, file, user) => __awaiter(void 0, void 0, void
         throw new Error(err);
     }
 });
-const getMyShopIntoDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield shop_model_1.CarShop.findOne({ authorShopId: user.id }).populate('authorShopId');
+const getMyShopIntoDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield shop_model_1.CarShop.findOne().populate('authorShopId');
     return result;
 });
 const updateShopIntoDB = (payload, file, user) => __awaiter(void 0, void 0, void 0, function* () {
