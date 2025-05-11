@@ -21,7 +21,7 @@ import { Document, Types } from 'mongoose';
 
 export interface IOrder extends Document {
   customerId: Types.ObjectId;
-  shopId: Types.ObjectId;
+  shopId?: Types.ObjectId;
   quantity?: number;
   color?: string;
   totalPrice: number;
