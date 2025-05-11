@@ -18,7 +18,7 @@ const createOrder = async (
   }
 
   const existCar = await CarModel.findOne({ _id: payload.car });
-
+  console.log(existCar, '.........................');
   if (!existCar) {
     throw new AppError(httpStatus.NOT_ACCEPTABLE, 'Order is not specified');
   }
@@ -32,10 +32,10 @@ const createOrder = async (
 
   // Create the order
   const order = await OrderModel.create({
-    customerId: existUser._id,
-    shopId: existCar.shopId,
-    productId: existCar._id,
-    quantity: payload.quantity,
+    customerId: existUser?._id,
+    shopId: existCar?.shopId,
+    productId: existCar?._id,
+    quantity: payload?.quantity,
     totalPrice: totalPrice,
     color: payload.colors,
   });
