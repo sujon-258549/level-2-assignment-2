@@ -11,8 +11,9 @@ const carSchema = new Schema<TCar>(
       enum: ['Toyota', 'BMW', 'Ford', 'Honda', 'Mercedes', 'Audi', 'Tesla'],
       required: [true, 'Brand is required'],
     },
-    id: {
+    shopId: {
       type: Schema.Types.ObjectId,
+      ref: 'CarShop',
     },
 
     model: {

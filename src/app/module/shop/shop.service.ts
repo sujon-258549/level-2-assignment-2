@@ -75,10 +75,8 @@ const createShopIntoDB = async (
   }
 };
 
-const getMyShopIntoDB = async (user: JwtPayload) => {
-  const result = await CarShop.findOne({ authorShopId: user.id }).populate(
-    'authorShopId',
-  );
+const getMyShopIntoDB = async () => {
+  const result = await CarShop.findOne().populate('authorShopId');
   return result;
 };
 

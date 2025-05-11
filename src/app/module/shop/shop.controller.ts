@@ -23,9 +23,7 @@ const createShop = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyShop = catchAsync(async (req: Request, res: Response) => {
-  const data = req?.user;
-
-  const result = await carShopServices.getMyShopIntoDB(data);
+  const result = await carShopServices.getMyShopIntoDB();
   sendSuccess(res, {
     statusCod: status.CREATED,
     success: true,

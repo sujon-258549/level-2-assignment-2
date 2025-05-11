@@ -4,6 +4,7 @@ import { orderRouter } from '../module/order/order.router';
 import { userRegistrationRouter } from '../module/useRegistration/user.registation.router';
 import { blogRouter } from '../module/blog/blog.router';
 import { shopRouters } from '../module/shop/shop.route';
+import { contactRouter } from '../module/contactUs/contactUs.router';
 
 const router = Router();
 
@@ -27,6 +28,10 @@ const allroute = [
   {
     path: '/shop',
     router: shopRouters,
+  },
+  {
+    path: '/contact',
+    router: contactRouter,
   },
 ];
 

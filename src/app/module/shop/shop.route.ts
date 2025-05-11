@@ -16,7 +16,7 @@ router.post(
   ShopControllers.createShop,
 );
 
-router.get('/my-shop', auth('admin'), ShopControllers.getMyShop);
+router.get('/my-shop', ShopControllers.getMyShop);
 router.put(
   '/update-shop',
   auth('admin'),

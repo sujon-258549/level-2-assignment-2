@@ -2,7 +2,7 @@ import { ObjectId } from 'mongoose';
 
 export interface TCar {
   // Basic Identification
-  id?: ObjectId;
+  shopId?: ObjectId;
   brand:
     | 'Toyota'
     | 'BMW'

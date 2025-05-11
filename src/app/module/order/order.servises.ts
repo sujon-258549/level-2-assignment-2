@@ -12,7 +12,6 @@ const createOrder = async (
   payload: { car: string; quantity: number; colors: string },
   client_ip: string,
 ) => {
-  console.log('.....................', payload);
   const existUser = await UserModel.findOne({ email: userData?.email });
   if (!existUser) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'User not Exist');
@@ -29,11 +28,12 @@ const createOrder = async (
   } else {
     totalPrice = Number(existCar?.originalPrice) * Number(payload.quantity);
   }
+  console.log('exis car and use', existCar, existUser);
 
   // Create the order
-  let order = await OrderModel.create({
+  const order = await OrderModel.create({
     customerId: existUser._id,
-    shopId: existCar.id,
+    shopId: existCar.shopId,
     productId: existCar._id,
     quantity: payload.quantity,
     totalPrice: totalPrice,
@@ -42,7 +42,7 @@ const createOrder = async (
 
   // Payment integration
   const shurjopayPayload = {
-    amount: 50,
+    amount: totalPrice,
     order_id: order._id,
     currency: 'BDT',
     customer_name: existUser.firstName,
@@ -55,11 +55,8 @@ const createOrder = async (
 
   const payment = await orderUtils.makePayment(shurjopayPayload);
 
-  console.log('payment', payment?.transactionStatus);
-
   if (payment?.transactionStatus) {
-    // @ts-expect-error order
-    order = await OrderModel.findByIdAndUpdate(
+    await OrderModel.findByIdAndUpdate(
       order._id,
       {
         transaction: {
@@ -103,12 +100,13 @@ const createOrder = async (
 //   return verifiedPayment;
 // };
 const verifyPayment = async (order_id: string) => {
-  console.log(order_id);
   const verifiedPayment = await orderUtils.verifyPayment(order_id);
+  // console.log(order_id, JverifiedPayment);
 
+  // console.log('verifiedPayment', verifiedPayment);
   if (Array.isArray(verifiedPayment) && verifiedPayment.length > 0) {
     const paymentData = verifiedPayment[0]; // Avoid repeated indexing
-
+    console.log('paymentData', paymentData);
     await OrderModel.findOneAndUpdate(
       { 'transaction.id': order_id },
       {
@@ -119,7 +117,7 @@ const verifyPayment = async (order_id: string) => {
           'transaction.transactionStatus': paymentData.transaction_status ?? '',
           'transaction.method': paymentData.method ?? '',
           'transaction.date_time': paymentData.date_time ?? '',
-          status:
+          paymentStatus:
             paymentData.bank_status === 'Success'
               ? 'Paid'
               : paymentData.bank_status === 'Failed'

@@ -4,27 +4,27 @@ import { sendImageToCloudinary } from '../../utility/sendImageToCloudinary';
 import { searchTram, TCar } from './car.interface';
 import { CarModel } from './car.model';
 import { ObjectId } from 'mongodb';
-import { UserModel } from '../useRegistration/user.registration.model';
 import httpStatus from 'http-status';
 import AppError from '../../Error/appError';
+import { CarShop } from '../shop/shop.model';
 // Function to create a new car entry
 const createCar = async (
   payload: TCar,
   productImage: { images: { path: string }[] },
   user: JwtPayload,
 ) => {
-  const existUser = await UserModel.findById(user.id);
-  if (!existUser) {
+  const existShop = await CarShop.findOne({ authorShopId: user.id });
+  if (!existShop) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'User not found');
   }
   // @ts-expect-error ids
-  payload.id = existUser._id;
+  payload.shopId = existShop._id;
 
   if (productImage?.images?.length > 0) {
     const uploadedUrls: string[] = [];
 
     for (const img of productImage.images) {
-      const name = payload.brand;
+      const name = `${payload.brand}-${Math.floor(Math.random() * 1000)}`;
       const { secure_url } = (await sendImageToCloudinary(name, img.path)) as {
         secure_url: string;
       };
@@ -93,7 +93,7 @@ const updateOneCarData = async (
     const uploadedUrls: string[] = [];
 
     for (const img of productImage.images) {
-      const name = updateData.brand as string;
+      const name = `${updateData.brand}-${Math.floor(Math.random() * 1000)}`;
       const { secure_url } = (await sendImageToCloudinary(name, img.path)) as {
         secure_url: string;
       };
