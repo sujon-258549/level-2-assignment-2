@@ -6,19 +6,16 @@ const OrderSchema = new Schema<IOrder>(
     customerId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     shopId: {
       type: Schema.Types.ObjectId,
       ref: 'CarShop',
-      required: true,
     },
     quantity: {
       quantity: Number,
     },
     productId: {
       type: Schema.Types.ObjectId,
-      required: true,
       ref: 'Car',
     },
     color: {
