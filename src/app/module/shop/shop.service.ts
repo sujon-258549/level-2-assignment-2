@@ -43,7 +43,7 @@ const createShopIntoDB = async (
       throw new AppError(status.CONFLICT, 'This user already shop create');
     }
     if (file) {
-      const path = file.path;
+      const path = file.buffer;
       const name = payload.shopName.replace(/\s+/g, '_').toLowerCase();
 
       const { secure_url } = (await sendImageToCloudinary(name, path)) as {
@@ -91,7 +91,7 @@ const updateShopIntoDB = async (
   }
 
   if (file) {
-    const path = file.path;
+    const path = file.buffer;
     const name =
       (payload.shopName?.replace(/\s+/g, '_').toLowerCase() ??
         isExistMealProvider.shopName) ||

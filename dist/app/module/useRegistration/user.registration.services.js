@@ -61,7 +61,7 @@ const searchBleFild = ['name', 'email'];
 const createdUser = (payload, file) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(file, payload);
     if (file) {
-        const path = file.path;
+        const path = file.buffer;
         const name = payload.firstName.replace(/\s+/g, '_').toLowerCase();
         const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, path));
         payload.profileImage = secure_url;
@@ -133,7 +133,7 @@ const changePassword = (token, payload) => __awaiter(void 0, void 0, void 0, fun
 });
 const updateMe = (payload, file, user) => __awaiter(void 0, void 0, void 0, function* () {
     if (file) {
-        const path = file.path;
+        const path = file.buffer;
         const name = payload.firstName;
         const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, path));
         payload.profileImage = secure_url;

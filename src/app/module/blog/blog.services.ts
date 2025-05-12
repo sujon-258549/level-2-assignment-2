@@ -21,7 +21,7 @@ const createBlog = async (payload: IBlogPost, file: any, user: JwtPayload) => {
   // @ts-expect-error user
   payload.authorId = isExistUser._id;
   if (file) {
-    const path = file?.path;
+    const path = file?.buffer;
     const name = isExistUser.firstName.replace(/\s+/g, '_').toLowerCase();
 
     const { secure_url } = (await sendImageToCloudinary(name, path)) as {
@@ -90,7 +90,7 @@ const updateBlog = async (
   }
 
   if (file) {
-    const path = file.path;
+    const path = file.buffer;
     const name = isExistUser.firstName.replace(/\s+/g, '_').toLowerCase();
     const { secure_url } = (await sendImageToCloudinary(name, path)) as {
       secure_url: string;

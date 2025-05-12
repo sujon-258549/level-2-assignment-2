@@ -34,7 +34,7 @@ const createCar = (payload, productImage, user) => __awaiter(void 0, void 0, voi
         const uploadedUrls = [];
         for (const img of productImage.images) {
             const name = `${payload.brand}-${Math.floor(Math.random() * 1000)}`;
-            const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, img.path));
+            const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, img.buffer));
             uploadedUrls.push(secure_url);
         }
         payload.image = uploadedUrls;
@@ -92,7 +92,7 @@ const updateOneCarData = (carId, updateData, productImage) => __awaiter(void 0, 
         const uploadedUrls = [];
         for (const img of productImage.images) {
             const name = `${updateData.brand}-${Math.floor(Math.random() * 1000)}`;
-            const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, img.path));
+            const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, img.buffer));
             uploadedUrls.push(secure_url);
         }
         updateData.image = uploadedUrls;

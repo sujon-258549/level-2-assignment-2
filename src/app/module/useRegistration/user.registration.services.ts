@@ -14,7 +14,7 @@ const searchBleFild = ['name', 'email'];
 const createdUser = async (payload: TUserRegistration, file: any) => {
   console.log(file, payload);
   if (file) {
-    const path = file.path;
+    const path = file.buffer;
     const name = payload.firstName.replace(/\s+/g, '_').toLowerCase();
 
     const { secure_url } = (await sendImageToCloudinary(name, path)) as {
@@ -123,7 +123,7 @@ const updateMe = async (
   user: JwtPayload,
 ) => {
   if (file) {
-    const path = file.path;
+    const path = file.buffer;
     const name = payload.firstName as string;
 
     const { secure_url } = (await sendImageToCloudinary(name, path)) as {

@@ -31,7 +31,7 @@ const createBlog = (payload, file, user) => __awaiter(void 0, void 0, void 0, fu
     // @ts-expect-error user
     payload.authorId = isExistUser._id;
     if (file) {
-        const path = file === null || file === void 0 ? void 0 : file.path;
+        const path = file === null || file === void 0 ? void 0 : file.buffer;
         const name = isExistUser.firstName.replace(/\s+/g, '_').toLowerCase();
         const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, path));
         if (!secure_url) {
@@ -80,7 +80,7 @@ const updateBlog = (payload, file, user, blogId) => __awaiter(void 0, void 0, vo
         throw new appError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
     }
     if (file) {
-        const path = file.path;
+        const path = file.buffer;
         const name = isExistUser.firstName.replace(/\s+/g, '_').toLowerCase();
         const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, path));
         if (!secure_url) {

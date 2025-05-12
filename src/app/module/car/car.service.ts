@@ -10,7 +10,7 @@ import { CarShop } from '../shop/shop.model';
 // Function to create a new car entry
 const createCar = async (
   payload: TCar,
-  productImage: { images: { path: string }[] },
+  productImage: { images: { buffer: Buffer }[] },
   user: JwtPayload,
 ) => {
   const existShop = await CarShop.findOne({ authorShopId: user.id });
@@ -25,7 +25,10 @@ const createCar = async (
 
     for (const img of productImage.images) {
       const name = `${payload.brand}-${Math.floor(Math.random() * 1000)}`;
-      const { secure_url } = (await sendImageToCloudinary(name, img.path)) as {
+      const { secure_url } = (await sendImageToCloudinary(
+        name,
+        img.buffer,
+      )) as {
         secure_url: string;
       };
       uploadedUrls.push(secure_url);
@@ -87,14 +90,17 @@ const deleteSingleCarData = async (carId: string) => {
 const updateOneCarData = async (
   carId: string,
   updateData: Partial<TCar>,
-  productImage: { images: { path: string }[] },
+  productImage: { images: { buffer: Buffer }[] },
 ) => {
   if (productImage?.images?.length > 0) {
     const uploadedUrls: string[] = [];
 
     for (const img of productImage.images) {
       const name = `${updateData.brand}-${Math.floor(Math.random() * 1000)}`;
-      const { secure_url } = (await sendImageToCloudinary(name, img.path)) as {
+      const { secure_url } = (await sendImageToCloudinary(
+        name,
+        img.buffer,
+      )) as {
         secure_url: string;
       };
       uploadedUrls.push(secure_url);

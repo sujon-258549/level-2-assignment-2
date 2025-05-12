@@ -41,7 +41,7 @@ const createShopIntoDB = (payload, file, user) => __awaiter(void 0, void 0, void
             throw new appError_1.default(http_status_1.default.CONFLICT, 'This user already shop create');
         }
         if (file) {
-            const path = file.path;
+            const path = file.buffer;
             const name = payload.shopName.replace(/\s+/g, '_').toLowerCase();
             const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, path));
             payload.shopLogo = secure_url;
@@ -76,7 +76,7 @@ const updateShopIntoDB = (payload, file, user) => __awaiter(void 0, void 0, void
         throw new appError_1.default(http_status_1.default.NOT_FOUND, 'Car shop not found');
     }
     if (file) {
-        const path = file.path;
+        const path = file.buffer;
         const name = ((_b = (_a = payload.shopName) === null || _a === void 0 ? void 0 : _a.replace(/\s+/g, '_').toLowerCase()) !== null && _b !== void 0 ? _b : isExistMealProvider.shopName) ||
             isExistMealProvider.shopName;
         const { secure_url } = (yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(name, path));
