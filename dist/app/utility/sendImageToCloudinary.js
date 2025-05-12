@@ -53,4 +53,3 @@ const storage = multer_1.default.diskStorage({
     },
 });
 exports.upload = (0, multer_1.default)({ storage: storage });
-// update file
